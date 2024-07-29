@@ -22,7 +22,7 @@ I'm a passionate Front-End Software Engineer with a knack for creating intuitive
 - [Email] benlaguroun@gmail.com
 
 📈 GitHub Stats
-![Your GitHub Stats](https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=radical)
+![Your GitHub Stats](https://github-readme-stats.vercel.app/api?username=benlaguroun&show_icons=true&theme=radical)
 
 🛠️ Languages and Tools
 ![React](https://img.shields.io/badge/-React-black?style=flat-square&logo=react)
