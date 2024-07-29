@@ -17,9 +17,9 @@ I'm a passionate Front-End Software Engineer with a knack for creating intuitive
 - Contributing to open-source projects and collaborating with the community.
 
 📫 How to Reach Me
-- [LinkedIn] https://www.linkedin.com/in/mohamed-benlaguroun/
-- [Twitter](https://twitter.com/yourprofile)
-- [Email] benlaguroun@gmail.com
+-  LinkedIn https://www.linkedin.com/in/mohamed-benlaguroun/
+-  Twitter  https://x.com/benlaguroun
+-  Email    benlaguroun@gmail.com
 
 📈 GitHub Stats
 ![Your GitHub Stats](https://github-readme-stats.vercel.app/api?username=benlaguroun&show_icons=true&theme=radical)
