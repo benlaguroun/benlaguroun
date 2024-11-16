@@ -157,19 +157,34 @@
 }
 
 .typing-animation {
-  font-size: 3.6rem;
+  font-size: 3.6rem; /* Default size for larger screens */
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
   border-right: 3px solid #cf711f; /* Blinking cursor */
   display: inline-block;
-  width: 20ch; /* Set a width to avoid layout shifts */
+  width: 20ch; /* Adjust this if needed */
   animation: blink-cursor 0.8s steps(2, start) infinite;
 }
 
 @keyframes blink-cursor {
   50% {
     border-color: transparent;
+  }
+}
+
+/* Responsive Typing Animation Adjustments */
+@media (max-width: 768px) {
+  .typing-animation {
+    font-size: 2.4rem; /* Adjusted for tablets and smaller screens */
+    width: 16ch; /* Adjust the width for smaller text length */
+  }
+}
+
+@media (max-width: 480px) {
+  .typing-animation {
+    font-size: 2rem; /* Further reduced for mobile screens */
+    width: 14ch; /* Adjust width to avoid overflow */
   }
 }
 
