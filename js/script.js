@@ -104,7 +104,7 @@ function checkFlexGap() {
 checkFlexGap();
 
 document.addEventListener("DOMContentLoaded", () => {
-  const text = "I’m Mohamed Ben";
+  const text = "I’m Mohamed Benlaguroun";
   const typingElement = document.querySelector(".typing-animation");
   let index = 0;
   let isDeleting = false;
