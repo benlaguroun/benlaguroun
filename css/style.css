@@ -156,6 +156,23 @@
   font-weight: 700;
 }
 
+.typing-animation {
+  font-size: 3.6rem;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid #cf711f; /* Blinking cursor */
+  display: inline-block;
+  width: 20ch; /* Set a width to avoid layout shifts */
+  animation: blink-cursor 0.8s steps(2, start) infinite;
+}
+
+@keyframes blink-cursor {
+  50% {
+    border-color: transparent;
+  }
+}
+
 /**************************/
 /* FEATURED IN SECTION */
 /**************************/

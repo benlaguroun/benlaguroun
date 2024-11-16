@@ -103,6 +103,33 @@ function checkFlexGap() {
 }
 checkFlexGap();
 
+document.addEventListener("DOMContentLoaded", () => {
+  const text = "I’m Mohamed Ben";
+  const typingElement = document.querySelector(".typing-animation");
+  let index = 0;
+  let isDeleting = false;
+
+  function typeText() {
+    if (!isDeleting && index <= text.length) {
+      // Typing characters
+      typingElement.textContent = text.substring(0, index);
+      index++;
+      setTimeout(typeText, 150); // Typing speed
+    } else if (isDeleting && index >= 0) {
+      // Deleting characters
+      typingElement.textContent = text.substring(0, index);
+      index--;
+      setTimeout(typeText, 100); // Deleting speed
+    } else {
+      // Toggle direction and pause before restarting
+      isDeleting = !isDeleting;
+      setTimeout(typeText, 1000); // Pause duration
+    }
+  }
+
+  typeText();
+});
+
 // https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js
 
 /*
