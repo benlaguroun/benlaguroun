@@ -1,11 +1,11 @@
-<h1 align="center">Hi there, I'm Mohamed 👋</h1>
+<h1 align="center">Hi there, I'm Mohamed  </h1>
 
 <p align="center">
   <img src="https://komarev.com/ghpvc/?username=benlaguroun&color=blue" alt="Profile Views" />
 </p>
 
 <p align="center">
-  🚀 Front-End Software Engineer | React & Next.js Enthusiast | Building smooth web experiences with purpose & creativity.
+  🚀 Front-End Software Engineer | React & Next.js | Building smooth web experiences with purpose & creativity.
 </p>
 
 ---
