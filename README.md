@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Front-End Software Engineer | React & Next.js | Building smooth web experiences with purpose & creativity.
+  Software Engineer ( Front-End) | React & Next.js | Building smooth web experiences with purpose & creativity.
 </p>
 
 ---
@@ -14,21 +14,21 @@
 
 I'm a passionate **Frontend Software Engineer** focused on building modern, responsive, and interactive web applications. I specialize in **React.js**, **Next.js**, and **TypeScript**, and I’m deeply interested in educational tech, PWA development, and creating products that improve lives.
 
-### 🔭 Current Projects
+###  Current Projects
 
 -  **Print-on-Demand E-Commerce Website** using **Printify API** + **Next.js**
 -  **French Learning App for Arabic Speakers** (React + Supabase + PWA)
 -  **Gym & Fitness App** with AI-based feedback system
 -  **Dental Website** with clean UI and advanced components
 
-### Growing With
+###  Growing With
 
 -  Progressive Web Apps (PWAs)
 -  API Integration & Data Handling
 -  AI & Chatbot Interfaces
 -  UX for Mobile-first Applications
 
-### Tech Stack
+###  Tech Stack
 
 ![React](https://img.shields.io/badge/-React-61DAFB?style=flat&logo=react&logoColor=000)
 ![Next.js](https://img.shields.io/badge/-Next.js-000000?style=flat&logo=next.js)
@@ -44,7 +44,7 @@ I'm a passionate **Frontend Software Engineer** focused on building modern, resp
 
 ---
 
-### GitHub Stats
+###  GitHub Stats
 
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=benlaguroun&show_icons=true&theme=radical" alt="GitHub Stats" />
@@ -52,7 +52,7 @@ I'm a passionate **Frontend Software Engineer** focused on building modern, resp
 
 ---
 
-### Reach Me
+###  Reach Me
 
 -  [Portfolio Website](https://benlaguroun.netlify.app/)
 -  [LinkedIn](https://www.linkedin.com/in/mohamed-benlaguroun/)
