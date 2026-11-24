@@ -4,6 +4,13 @@ export const site = {
   email: "hello@example.com",
   founder: "Ben Laguroun",
 
+  // Used in the legal pages. Check these match how you really run the business.
+  legal: {
+    country: "Morocco",
+    refundDays: 14, // how long buyers have to ask for a refund on templates and courses
+    updated: "2026-11-24", // change this date whenever you edit the legal text
+  },
+
   // Social profiles. Links with an empty href are hidden automatically, so
   // paste your full profile URLs here to switch them on everywhere
   // (hero, About page and footer).
@@ -31,6 +38,7 @@ export const site = {
     { key: "templates", href: "/templates" },
     { key: "courses", href: "/courses" },
     { key: "work", href: "/portfolio" },
+    { key: "blog", href: "/blog" },
     { key: "about", href: "/about" },
     { key: "contact", href: "/contact" },
   ],

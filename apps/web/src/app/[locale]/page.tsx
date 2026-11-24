@@ -14,6 +14,7 @@ import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { TechMarquee } from "@/components/tech-marquee";
+import { Testimonials } from "@/components/testimonials";
 import { ProfilePhoto } from "@/components/profile-photo";
 import { SocialIcons } from "@/components/social-links";
 import { TypedRoles } from "@/components/typed-roles";
@@ -31,13 +32,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const locale = await resolveLocale(params);
   const t = getDict(locale);
 
-  const [services, templates, courses, projects, projectCount, productCount] = await Promise.all([
+  const [services, templates, courses, projects, projectCount, productCount, testimonials] = await Promise.all([
     prisma.product.findMany({ where: { type: "SERVICE", published: true }, orderBy: { position: "asc" }, take: 3 }),
     prisma.product.findMany({ where: { type: "TEMPLATE", published: true }, orderBy: { position: "asc" }, take: 3 }),
     prisma.product.findMany({ where: { type: "COURSE", published: true }, orderBy: { position: "asc" }, take: 3 }),
     prisma.project.findMany({ where: { featured: true }, orderBy: { position: "asc" }, take: 3 }),
     prisma.project.count(),
     prisma.product.count({ where: { published: true } }),
+    prisma.testimonial.findMany({ where: { published: true }, orderBy: [{ position: "asc" }, { createdAt: "asc" }], take: 6 }),
   ]);
 
   return (
@@ -239,6 +241,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </section>
       )}
+
+      <Testimonials items={testimonials} locale={locale} t={t.testimonials} />
 
       {/* ───────────── Final call to action ───────────── */}
       <section className="wrap pt-28">

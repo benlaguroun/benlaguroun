@@ -9,8 +9,8 @@ const prisma = new PrismaClient({
 
 // Everything below is SAMPLE content so the site looks alive on first run.
 // English lives in the normal columns; French and Arabic live in `translations`.
-// Re-running the seed refreshes translations but never overwrites your own edits
-// to prices, links or English text.
+// Re-running the seed only adds what is missing. It never changes a product,
+// course or lesson that already exists, so edits you make in the admin are safe.
 async function main() {
   // ---- Services ---------------------------------------------------------
   const services = [
@@ -99,7 +99,7 @@ async function main() {
   for (const s of services) {
     await prisma.product.upsert({
       where: { slug: s.slug },
-      update: { translations: s.translations },
+      update: {}, // never overwrite what you edited in the admin
       create: { ...s, type: "SERVICE" },
     });
   }
@@ -196,7 +196,7 @@ async function main() {
   for (const t of templates) {
     await prisma.product.upsert({
       where: { slug: t.slug },
-      update: { translations: t.translations },
+      update: {}, // never overwrite what you edited in the admin
       create: { ...t, type: "TEMPLATE" },
     });
   }
@@ -388,30 +388,14 @@ async function main() {
         },
       },
     });
-  } else {
-    // Course already exists: only refresh translations.
-    await prisma.product.update({ where: { id: existing.id }, data: { translations: courseTranslations } });
-    if (existing.course) {
-      for (const m of modules) {
-        await prisma.module.updateMany({
-          where: { courseId: existing.course.id, position: m.position },
-          data: { translations: m.translations },
-        });
-        for (const l of m.lessons) {
-          await prisma.lesson.updateMany({
-            where: { slug: l.slug, module: { courseId: existing.course.id } },
-            data: { translations: l.translations },
-          });
-        }
-      }
-    }
   }
+  // A course that already exists is left alone: edit it in the admin (Products).
 
   // ---- Solutions clients ask for -----------------------------------------
   for (const [i, sol] of solutions.entries()) {
     await prisma.product.upsert({
       where: { slug: sol.slug },
-      update: { translations: sol.translations },
+      update: {}, // never overwrite what you edited in the admin
       create: { ...sol, type: "SERVICE", priceCents: null, featured: i < 2 },
     });
   }

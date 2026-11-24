@@ -325,3 +325,58 @@ model Payment {
   @@index([status, createdAt])
   @@index([clientId])
 }
+
+// ---------------------------------------------------------------------------
+// Social proof and audience
+// ---------------------------------------------------------------------------
+
+// A real client quote shown on the home page once it is published.
+model Testimonial {
+  id           String   @id @default(cuid())
+  name         String
+  role         String?  // e.g. "Director, Al Noor School"
+  quote        String
+  translations Json?    // { fr: {role, quote}, ar: {...} }
+  published    Boolean  @default(false)
+  position     Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([published, position])
+}
+
+// Someone who asked to hear from you by email.
+model Subscriber {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  locale         String    @default("en")
+  source         String?   // where they signed up, e.g. "footer"
+  token          String    @unique @default(cuid()) // used in the unsubscribe link
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  unsubscribedAt DateTime?
+
+  @@index([active, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Blog
+// ---------------------------------------------------------------------------
+
+// body is written in a small subset of Markdown (headings, lists, bold, links,
+// code, quotes, images); see lib/markdown.tsx.
+model Post {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  title        String
+  excerpt      String
+  body         String
+  coverUrl     String?
+  tags         String[]
+  translations Json?     // { fr: {title, excerpt, body}, ar: {...} }
+  published    Boolean   @default(false)
+  publishedAt  DateTime? // set the first time the post is published
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([published, publishedAt])
+}

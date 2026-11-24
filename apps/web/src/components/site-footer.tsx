@@ -2,6 +2,7 @@ import Link from "next/link";
 import { activeSocial, site } from "@/config/site";
 import { lp, type Locale } from "@/i18n/config";
 import { SocialGlyph } from "./social-links";
+import { NewsletterForm } from "./newsletter-form";
 import { getDict } from "@/i18n/dictionaries";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
@@ -45,8 +46,29 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           </ul>
         </div>
       </div>
-      <div className="border-t border-line py-5 text-center text-xs text-mute">
-        © {new Date().getFullYear()} {site.name}. {t.footer.rights}
+
+      {/* Newsletter */}
+      <div className="border-t border-line">
+        <div className="wrap grid gap-5 py-10 md:grid-cols-[1.5fr_1fr_1fr] md:items-center">
+          <div className="md:col-span-2">
+            <p className="display text-xl font-semibold">{t.newsletter.title}</p>
+            <p className="mt-2 max-w-xl text-sm text-mute">{t.newsletter.body}</p>
+          </div>
+          <NewsletterForm locale={locale} t={t.newsletter} />
+        </div>
+      </div>
+
+      <div className="border-t border-line">
+        <div className="wrap flex flex-col items-center justify-between gap-3 py-5 text-xs text-mute sm:flex-row">
+          <p>
+            © {new Date().getFullYear()} {site.name}. {t.footer.rights}
+          </p>
+          <nav aria-label="Legal" className="flex flex-wrap justify-center gap-x-5 gap-y-1">
+            <Link href={lp(locale, "/privacy")} className="transition hover:text-ink">{t.legal.privacy}</Link>
+            <Link href={lp(locale, "/terms")} className="transition hover:text-ink">{t.legal.terms}</Link>
+            <Link href={lp(locale, "/refunds")} className="transition hover:text-ink">{t.legal.refunds}</Link>
+          </nav>
+        </div>
       </div>
     </footer>
   );

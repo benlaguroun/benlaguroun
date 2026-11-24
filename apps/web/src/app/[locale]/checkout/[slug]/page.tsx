@@ -12,6 +12,7 @@ import { availableProviders } from "@/lib/payments";
 import { requireSession } from "@/lib/session";
 import { ArrowBack, Check } from "@/components/icons";
 import { CheckoutForm, type Method } from "@/components/checkout-form";
+import { LegalConsent } from "@/components/legal-consent";
 import { Reveal } from "@/components/reveal";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false, follow: false } };
@@ -131,6 +132,7 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
                   errors={t.errors}
                 />
               )}
+              {methods.length > 0 && <LegalConsent locale={locale} />}
             </div>
           </section>
         </Reveal>

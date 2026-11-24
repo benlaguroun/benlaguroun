@@ -74,6 +74,13 @@ export function AuthForm({
           className="field"
         />
         {mode === "signup" && <p className="mt-1.5 text-xs text-mute">{t.hint}</p>}
+        {mode === "login" && (
+          <p className="mt-2 text-end text-sm">
+            <Link href={lp(locale, "/forgot-password")} className="text-mute hover:text-aqua hover:underline">
+              {t.forgotLink}
+            </Link>
+          </p>
+        )}
       </div>
 
       {error && <p role="alert" className="text-sm text-rose">{error}</p>}

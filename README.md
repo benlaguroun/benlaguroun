@@ -58,10 +58,22 @@ Set `BREVO_API_KEY` and `EMAIL_FROM` (a sender you verified in Brevo) and the si
 
 **PayPal and currencies.** PayPal can't charge every currency (Moroccan dirham, for example). When a product is priced in an unsupported currency, PayPal is simply not offered for it and the buyer sees the other methods.
 
-## Adding your own products and lessons
+## Managing content in the admin
 
-There is no admin UI yet, so for now edit `packages/db/prisma/seed.ts` or use `npx prisma studio` from `packages/db`. For templates, set `deliveryUrl` to the file the buyer should receive (a private storage link works well). For course lessons, `videoUrl` takes an embed URL from YouTube, Vimeo, Bunny or Mux, and `isPreview` makes a lesson free to watch.
+Sign in as an admin and use the side menu:
+
+- **Products** creates and edits services, templates and courses: text, price, bullet points, cover image, French and Arabic versions, published/featured, and (for templates) the download and preview links. A course has a **Curriculum** page for modules and lessons: add, edit, reorder, mark free previews, and paste a YouTube or Vimeo link (it becomes an embed automatically). A product that has been bought can't be deleted, only unpublished, so your sales history stays intact.
+- **Testimonials** holds real client quotes. The home-page section stays hidden until one is published.
+- **Subscribers** lists newsletter sign-ups and downloads the active ones as a CSV to import into Brevo or any newsletter tool.
+
+`npm run db:seed` only adds missing sample content and never changes a product, course or lesson that already exists, so it is safe to run after you start editing.
+
+## Legal pages and the newsletter
+
+The privacy policy, terms of sale and refund policy live at `/privacy`, `/terms` and `/refunds` in all three languages. The text is in `apps/web/src/i18n/legal.ts`; the country, refund window and "last updated" date are in `apps/web/src/config/site.ts` (`legal`). They are a solid starting point written for how this site works, not legal advice, so have a lawyer read them, and change the date whenever you edit the text. Checkout links to the terms and refund policy.
+
+The footer has a newsletter form. New subscribers get a welcome email (when Brevo is set up) with an unsubscribe link, and unsubscribing takes one confirmed click. The site stores the list; you send the actual newsletters from your email tool.
 
 ## Good next steps
 
-An admin dashboard for products, lessons and leads; email notifications for new leads and purchases (Resend works well); signed, expiring download links for templates; email verification and password reset in better-auth; and caching for the public pages once the content is stable (they currently render on every request).
+A blog for search traffic; signed, expiring download links for templates; email verification and password reset in better-auth; privacy-friendly analytics (Plausible or Umami, then mention it in the privacy policy); and caching for the public pages once the content is stable (they currently render on every request).
