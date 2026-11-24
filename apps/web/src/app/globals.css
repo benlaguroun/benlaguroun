@@ -97,17 +97,6 @@ body {
   background: radial-gradient(ellipse at 50% -10%, #12122a 0%, var(--color-void) 60%);
   pointer-events: none;
 }
-.aurora::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 72%);
-}
 .aurora::after {
   content: "";
   position: absolute;
@@ -155,13 +144,13 @@ body {
   position: fixed;
   left: 0;
   top: 0;
-  width: 520px;
-  height: 520px;
-  margin: -260px 0 0 -260px;
+  width: 240px;
+  height: 240px;
+  margin: -120px 0 0 -120px;
   border-radius: 9999px;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(circle, rgb(139 92 246 / 0.16), rgb(34 211 238 / 0.06) 45%, transparent 70%);
+  background: radial-gradient(circle, rgb(139 92 246 / 0.14), rgb(34 211 238 / 0.05) 45%, transparent 70%);
   transform: translate3d(var(--cx, -999px), var(--cy, -999px), 0);
   transition: opacity 0.4s;
 }
@@ -196,7 +185,7 @@ body {
     border-color 0.3s;
 }
 .spot:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   border-color: rgb(255 255 255 / 0.16);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.1),
@@ -212,7 +201,7 @@ body {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.35s;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(139 92 246 / 0.22), transparent 45%);
+  background: radial-gradient(200px circle at var(--mx, 50%) var(--my, 50%), rgb(139 92 246 / 0.22), transparent 45%);
 }
 /* Gradient border that lights up near the cursor */
 .spot::after {
@@ -225,7 +214,7 @@ body {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.35s;
-  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(34 211 238 / 0.9), transparent 45%);
+  background: radial-gradient(120px circle at var(--mx, 50%) var(--my, 50%), rgb(34 211 238 / 0.9), transparent 45%);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -547,4 +536,24 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Hero portrait: organic blob with an offset outline (static, no motion) */
+.blob-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 58% 42% 52% 48% / 50% 58% 42% 50%;
+  border: 2px solid rgb(255 255 255 / 0.14);
+  background: var(--color-panel);
+  box-shadow: 0 0 80px -10px rgb(34 211 238 / 0.35);
+}
+.blob-outline {
+  inset: -4% -6% 4% 6%;
+  border-radius: 46% 54% 40% 60% / 56% 44% 56% 44%;
+  border: 2px solid rgb(103 232 249 / 0.7);
+  transform: rotate(-8deg);
+}
+[dir="rtl"] .blob-outline {
+  inset: -4% 6% 4% -6%;
+  transform: rotate(8deg);
 }

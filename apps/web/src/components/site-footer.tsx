@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { activeSocial, site } from "@/config/site";
 import { lp, type Locale } from "@/i18n/config";
+import { SocialGlyph } from "./social-links";
 import { getDict } from "@/i18n/dictionaries";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
@@ -35,8 +36,9 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           <ul className="mt-4 space-y-2.5 text-sm">
             {activeSocial().map((s) => (
               <li key={s.href}>
-                <a href={s.href} target="_blank" rel="noreferrer" className="text-mute transition hover:text-ink">
-                  {s.label} ↗
+                <a href={s.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2.5 text-mute transition hover:text-ink">
+                  <SocialGlyph k={s.key} className="h-4 w-4" />
+                  {s.label}
                 </a>
               </li>
             ))}

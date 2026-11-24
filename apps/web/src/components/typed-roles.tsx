@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 /** Types out each role in turn, deletes it, then moves to the next. */
-export function TypedRoles({ roles }: { roles: string[] }) {
+export function TypedRoles({ roles, className = "text-sm sm:text-base" }: { roles: string[]; className?: string }) {
   const [index, setIndex] = useState(0);
   const [text, setText] = useState(roles[0] ?? "");
   const [deleting, setDeleting] = useState(false);
@@ -29,7 +29,7 @@ export function TypedRoles({ roles }: { roles: string[] }) {
   }, [text, deleting, index, roles]);
 
   return (
-    <span className="inline-flex min-h-[1.6em] items-center gap-1 font-mono text-sm text-aqua sm:text-base" dir="auto">
+    <span className={`inline-flex min-h-[1.6em] items-center gap-1 font-mono text-aqua ${className}`} dir="auto">
       <span aria-live="off">{text}</span>
       <span className="caret" aria-hidden />
     </span>

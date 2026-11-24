@@ -21,94 +21,80 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const locale = await resolveLocale(params);
   const t = getDict(locale);
 
-  const [services, templates, courses, projects] = await Promise.all([
+  const [services, templates, courses, projects, projectCount, productCount] = await Promise.all([
     prisma.product.findMany({ where: { type: "SERVICE", published: true }, orderBy: { position: "asc" }, take: 3 }),
     prisma.product.findMany({ where: { type: "TEMPLATE", published: true }, orderBy: { position: "asc" }, take: 3 }),
     prisma.product.findMany({ where: { type: "COURSE", published: true }, orderBy: { position: "asc" }, take: 3 }),
     prisma.project.findMany({ where: { featured: true }, orderBy: { position: "asc" }, take: 3 }),
+    prisma.project.count(),
+    prisma.product.count({ where: { published: true } }),
   ]);
 
   return (
     <>
       {/* ───────────── Hero ───────────── */}
       <section className="relative">
-        <div className="wrap grid gap-14 pb-16 pt-14 sm:pt-24 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+        <div className="wrap grid gap-14 pb-14 pt-12 sm:pt-20 lg:grid-cols-2 lg:items-center lg:gap-10">
+          {/* Photo in an organic shape, with a glow and an offset outline */}
+          <Reveal>
+            <div className="relative mx-auto w-full max-w-[21rem] sm:max-w-sm">
+              <span className="deco -inset-10 rounded-full bg-gradient-to-br from-iris/35 via-transparent to-aqua/30 blur-3xl" />
+              <span className="blob-outline deco" />
+              <div className="blob-photo aspect-[4/5]">
+                <ProfilePhoto alt={fill(t.hero.photoAlt, { name: site.name })} priority />
+              </div>
+            </div>
+          </Reveal>
+
           <div>
-            <Reveal>
+            <Reveal delay={80}>
               <span className="glass inline-flex items-center gap-2.5 !rounded-full px-4 py-1.5 text-xs font-medium text-mute">
                 <span className="live-dot" /> {t.hero.badge}
               </span>
-            </Reveal>
-
-            <Reveal delay={80}>
-              <p className="eyebrow mt-7">{t.hero.eyebrow}</p>
-              <h1 className="display mt-4 text-[2.6rem] font-semibold leading-[1.08] sm:text-6xl lg:text-[4.2rem]">
-                {t.hero.titleA} <span className="text-gradient">{t.hero.titleB}</span> {t.hero.titleC}
-              </h1>
+              <p className="display mt-6 text-lg font-medium text-ink/90">{t.hero.hello}</p>
+              <h1 className="display mt-1 text-5xl font-semibold leading-tight sm:text-6xl">{site.name}</h1>
+              <p className="display mt-2 flex flex-wrap items-center gap-x-2 text-xl font-medium sm:text-2xl">
+                <span>{t.hero.iam}</span>
+                <TypedRoles roles={t.hero.roles} className="!text-xl font-semibold sm:!text-2xl" />
+              </p>
             </Reveal>
 
             <Reveal delay={160}>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-mute">{t.hero.sub}</p>
-              <div className="mt-5">
-                <TypedRoles roles={t.hero.roles} />
+              <p className="mt-6 max-w-lg leading-relaxed text-mute">{t.hero.sub}</p>
+              <div className="mt-6">
+                <SocialIcons />
               </div>
             </Reveal>
 
             <Reveal delay={240}>
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Link href={lp(locale, "/services")} className="btn btn-primary">
-                  {t.hero.ctaPrimary} <Arrow />
+                  {t.hero.ctaHire} <Arrow />
                 </Link>
-                <Link href={lp(locale, "/courses")} className="btn btn-glass">
-                  {t.hero.ctaSecondary}
+                <Link href={lp(locale, "/contact")} className="btn btn-glass">
+                  {t.hero.ctaContact}
                 </Link>
-              </div>
-              <div className="mt-8 flex items-center gap-4">
-                <span className="text-sm text-mute">{t.hero.follow}</span>
-                <SocialIcons />
               </div>
             </Reveal>
           </div>
+        </div>
 
-          <Reveal delay={200}>
-            <div className="relative mx-auto w-full max-w-[22rem] lg:max-w-sm">
-              <span className="deco -inset-8 rounded-full bg-gradient-to-br from-iris/30 via-transparent to-aqua/25 blur-3xl" />
-
-              <div className="photo-ring">
-                <div className="inner aspect-[4/5]">
-                  <ProfilePhoto alt={fill(t.hero.photoAlt, { name: site.name })} priority />
+        {/* Numbers that come straight from the site's own data */}
+        <div className="wrap pb-10">
+          <Reveal delay={300}>
+            <dl className="glass grid grid-cols-2 gap-y-6 px-4 py-7 sm:px-8 lg:grid-cols-4 lg:gap-y-0">
+              {[
+                [projectCount, t.hero.stats[0]],
+                [productCount, t.hero.stats[1]],
+                [site.stack.length, t.hero.stats[2]],
+                [3, t.hero.stats[3]],
+              ].map(([n, label], i) => (
+                <div key={label} className={`px-3 text-center lg:px-6 ${i > 0 ? "lg:border-s lg:border-line" : ""}`}>
+                  <dt className="display text-4xl font-semibold text-gradient sm:text-5xl">{n}</dt>
+                  <dd className="mt-1 text-xs text-mute sm:text-sm">{label}</dd>
                 </div>
-              </div>
-
-              {/* Floating skill chips */}
-              <span className="glass node-float absolute -start-4 top-10 !rounded-full px-4 py-2 font-mono text-xs sm:-start-10">
-                {t.hero.chips[0]}
-              </span>
-              <span
-                className="glass node-float absolute -end-3 top-1/2 !rounded-full px-4 py-2 font-mono text-xs sm:-end-9"
-                style={{ animationDelay: "-2.4s" }}
-              >
-                {t.hero.chips[1]}
-              </span>
-              <span
-                className="glass node-float absolute -start-2 bottom-24 !rounded-full px-4 py-2 font-mono text-xs sm:-start-8"
-                style={{ animationDelay: "-4.8s" }}
-              >
-                <span className="live-dot me-2 inline-block align-middle" />
-                {t.hero.chips[2]}
-              </span>
-
-              {/* Name card */}
-              <div className="glass absolute inset-x-5 -bottom-5 flex items-center justify-between gap-3 px-5 py-3.5">
-                <div className="min-w-0">
-                  <p className="display truncate text-base font-semibold">{site.name}</p>
-                  <p className="truncate font-mono text-[0.68rem] text-aqua">{t.hero.roles[1]}</p>
-                </div>
-                <Link href={lp(locale, "/about")} className="btn btn-glass !px-3.5 !py-2 text-xs">
-                  {t.nav.about} <Arrow />
-                </Link>
-              </div>
-            </div>
+              ))}
+            </dl>
           </Reveal>
         </div>
 

@@ -31,6 +31,11 @@ export const en = {
     chips: ["Full-stack", "AI engineer", "Tested on LAN"],
     photoAlt: "Portrait of {name}",
     follow: "Find me on",
+    hello: "Hello, I'm",
+    iam: "And I'm a",
+    ctaHire: "Hire me",
+    ctaContact: "Contact me",
+    stats: ["Projects built", "Products & services", "Technologies", "Languages"],
   },
   pillars: {
     eyebrow: "Approach",

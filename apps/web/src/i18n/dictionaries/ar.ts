@@ -33,6 +33,11 @@ export const ar: Dict = {
     chips: ["Full-Stack", "مهندس ذكاء اصطناعي", "مُختبَر على الشبكة المحلية"],
     photoAlt: "صورة {name}",
     follow: "تجدني على",
+    hello: "مرحبًا، أنا",
+    iam: "أنا",
+    ctaHire: "وظّفني",
+    ctaContact: "تواصل معي",
+    stats: ["مشاريع منجزة", "منتجات وخدمات", "تقنيات", "لغات"],
   },
   pillars: {
     eyebrow: "المنهج",

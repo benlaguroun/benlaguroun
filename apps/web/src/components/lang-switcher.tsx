@@ -1,15 +1,33 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { locales, localeMeta, isLocale, type Locale } from "@/i18n/config";
 import { Globe } from "./icons";
 
 /**
- * EN | FR | AR pill. Swaps the first URL segment, remembers the choice in a
- * cookie (so the proxy sends you back to it) and reloads the page.
+ * Just a globe icon. Click it to open a small menu with the three languages.
+ * Choosing one swaps the first URL segment, remembers the choice in a cookie
+ * (so the proxy sends you back to it) and reloads the page.
  */
 export function LangSwitcher({ current, label }: { current: Locale; label: string }) {
   const pathname = usePathname() ?? `/${current}`;
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: PointerEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("pointerdown", away);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", away);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
 
   function hrefFor(next: Locale) {
     const parts = pathname.split("/");
@@ -25,28 +43,41 @@ export function LangSwitcher({ current, label }: { current: Locale; label: strin
   }
 
   return (
-    <div
-      className="flex items-center gap-1 rounded-full border border-line bg-white/5 p-1"
-      role="group"
-      aria-label={label}
-    >
-      <Globe className="ms-2 h-4 w-4 text-mute" />
-      {locales.map((l) => (
-        <a
-          key={l}
-          href={hrefFor(l)}
-          hrefLang={l}
-          lang={l}
-          onClick={(e) => choose(e, l)}
-          aria-current={l === current ? "true" : undefined}
-          title={localeMeta[l].native}
-          className={`rounded-full px-2.5 py-1 font-mono text-[0.7rem] font-semibold tracking-wide transition ${
-            l === current ? "bg-white text-void" : "text-mute hover:text-ink"
-          }`}
-        >
-          {localeMeta[l].short}
-        </a>
-      ))}
+    <div ref={box} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label={label}
+        title={label}
+        className="grid h-10 w-10 place-items-center rounded-full border border-line bg-white/5 text-mute transition hover:bg-white/10 hover:text-ink"
+      >
+        <Globe className="h-[1.15rem] w-[1.15rem]" />
+      </button>
+
+      {open && (
+        <ul role="menu" className="glass absolute end-0 top-full z-50 mt-2 w-40 p-1.5">
+          {locales.map((l) => (
+            <li key={l} role="none">
+              <a
+                role="menuitem"
+                href={hrefFor(l)}
+                hrefLang={l}
+                lang={l}
+                onClick={(e) => choose(e, l)}
+                aria-current={l === current ? "true" : undefined}
+                className={`flex items-center justify-between rounded-xl px-3 py-2 text-sm transition ${
+                  l === current ? "bg-white/10 font-semibold text-ink" : "text-mute hover:bg-white/8 hover:text-ink"
+                }`}
+              >
+                <span>{localeMeta[l].native}</span>
+                <span className="font-mono text-[0.68rem] opacity-70">{localeMeta[l].short}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

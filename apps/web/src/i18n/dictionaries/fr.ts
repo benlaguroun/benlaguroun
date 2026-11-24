@@ -33,6 +33,11 @@ export const fr: Dict = {
     chips: ["Full-stack", "Ingénieur IA", "Testé en réseau local"],
     photoAlt: "Portrait de {name}",
     follow: "Retrouvez-moi sur",
+    hello: "Bonjour, je suis",
+    iam: "Je suis",
+    ctaHire: "Me recruter",
+    ctaContact: "Me contacter",
+    stats: ["Projets réalisés", "Produits & services", "Technologies", "Langues"],
   },
   pillars: {
     eyebrow: "Approche",
