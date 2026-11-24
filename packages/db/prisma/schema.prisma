@@ -194,8 +194,10 @@ model Order {
   provider    String      // "stripe" | "lemonsqueezy"
   providerRef String?     @unique // checkout session / order id from the provider
   status      OrderStatus @default(PENDING)
+  locale      String      @default("en") // language the buyer used, for their receipt
   createdAt   DateTime    @default(now())
   paidAt      DateTime?
+  receiptSentAt DateTime? // set once the receipt email has gone out
 
   entitlement Entitlement?
 

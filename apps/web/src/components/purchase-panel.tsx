@@ -2,8 +2,7 @@ import Link from "next/link";
 import type { Product } from "@brand/db";
 import { lp, type Locale } from "@/i18n/config";
 import { getDict } from "@/i18n/dictionaries";
-import { formatPrice, productPath } from "@/lib/format";
-import { BuyButton } from "./buy-button";
+import { formatPrice } from "@/lib/format";
 import { Check } from "./icons";
 
 type Props = { product: Product; locale: Locale; signedIn: boolean; owned: boolean };
@@ -34,20 +33,16 @@ export function PurchasePanel({ product, locale, signedIn, owned }: Props) {
             {t.product.openLibrary}
           </Link>
         )
-      ) : signedIn ? (
-        <BuyButton
-          productId={product.id}
-          locale={locale}
-          label={`${t.product.buyNow} · ${price}`}
-          redirecting={t.product.redirecting}
-          errors={t.errors}
-        />
       ) : (
         <Link
-          href={`${lp(locale, "/login")}?next=${encodeURIComponent(lp(locale, productPath(product)))}`}
+          href={
+            signedIn
+              ? lp(locale, `/checkout/${product.slug}`)
+              : `${lp(locale, "/login")}?next=${encodeURIComponent(lp(locale, `/checkout/${product.slug}`))}`
+          }
           className="btn btn-primary w-full"
         >
-          {t.product.loginToBuy} · {price}
+          {signedIn ? t.product.buyNow : t.product.loginToBuy} · {price}
         </Link>
       )}
 

@@ -1,3 +1,4 @@
+import { providerLabel } from "@/lib/payments/labels";
 import { prisma } from "@brand/db";
 
 export type PaymentRow = {
@@ -54,7 +55,7 @@ export async function getPaymentRows(opts: {
         amountCents: o.amountCents,
         currency: o.currency,
         status: o.status,
-        method: o.provider === "lemonsqueezy" ? "Lemon Squeezy" : "Stripe",
+        method: providerLabel(o.provider),
         date: o.paidAt ?? o.createdAt,
         editable: false,
       });

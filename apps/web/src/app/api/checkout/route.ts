@@ -1,38 +1,38 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@brand/db";
 import { getSession } from "@/lib/session";
-import { getPaymentProvider } from "@/lib/payments";
+import { availableProviders, getProvider } from "@/lib/payments";
 import { site } from "@/lib/site-url";
-import { productPath } from "@/lib/format";
 import { defaultLocale, isLocale, lp } from "@/i18n/config";
+
+type Code = "signin" | "invalid" | "failed" | "method";
+
+const fail = (code: Code, status: number) => NextResponse.json({ code }, { status });
 
 export async function POST(req: Request) {
   const session = await getSession();
-  if (!session) {
-    return NextResponse.json({ code: "signin" }, { status: 401 });
-  }
+  if (!session) return fail("signin", 401);
 
-  const body = (await req.json().catch(() => ({}))) as { productId?: string; locale?: string };
-  const { productId } = body;
+  const body = (await req.json().catch(() => ({}))) as { productId?: string; locale?: string; provider?: string };
   const locale = isLocale(body.locale) ? body.locale : defaultLocale;
-  if (!productId) {
-    return NextResponse.json({ code: "invalid" }, { status: 400 });
+  if (!body.productId) return fail("invalid", 400);
+
+  const product = await prisma.product.findUnique({ where: { id: body.productId } });
+  if (!product || !product.published || product.type === "SERVICE" || product.priceCents == null) {
+    return fail("invalid", 400);
   }
 
-  const product = await prisma.product.findUnique({ where: { id: productId } });
-  if (!product || !product.published || product.type === "SERVICE" || product.priceCents == null) {
-    return NextResponse.json({ code: "invalid" }, { status: 400 });
-  }
+  // The buyer's choice, or the only method on offer.
+  const methods = availableProviders(product.currency);
+  const provider = body.provider ? getProvider(body.provider, product.currency) : methods.length === 1 ? methods[0] : null;
+  if (!provider) return fail("method", 400);
 
   const already = await prisma.entitlement.findUnique({
     where: { userId_productId: { userId: session.user.id, productId: product.id } },
   });
-  if (already) {
-    return NextResponse.json({ url: `${site.url}${lp(locale, "/dashboard")}` });
-  }
+  if (already) return NextResponse.json({ url: `${site.url}${lp(locale, "/dashboard")}` });
 
-  const provider = getPaymentProvider();
-
+  // The price always comes from the database, never from the browser.
   const order = await prisma.order.create({
     data: {
       userId: session.user.id,
@@ -40,12 +40,14 @@ export async function POST(req: Request) {
       amountCents: product.priceCents,
       currency: product.currency,
       provider: provider.name,
+      locale,
     },
   });
 
   try {
     const checkout = await provider.createCheckout({
       orderId: order.id,
+      locale,
       product: {
         name: product.name,
         description: product.tagline,
@@ -56,7 +58,7 @@ export async function POST(req: Request) {
       },
       customer: { email: session.user.email, name: session.user.name },
       successUrl: `${site.url}${lp(locale, "/checkout/success")}?order=${order.id}`,
-      cancelUrl: `${site.url}${lp(locale, productPath(product))}`,
+      cancelUrl: `${site.url}${lp(locale, `/checkout/${product.slug}`)}?cancelled=1`,
     });
 
     if (checkout.providerRef) {
@@ -64,8 +66,9 @@ export async function POST(req: Request) {
     }
     return NextResponse.json({ url: checkout.url });
   } catch (err) {
-    console.error("Checkout creation failed", err);
+    console.error(`${provider.name} checkout creation failed`, err);
     await prisma.order.delete({ where: { id: order.id } }).catch(() => {});
-    return NextResponse.json({ code: "failed" }, { status: 502 });
+    return fail("failed", 502);
   }
 }
+

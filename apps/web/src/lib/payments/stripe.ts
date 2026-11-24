@@ -13,7 +13,7 @@ export function getStripe() {
 export const stripeProvider: PaymentProvider = {
   name: "stripe",
 
-  async createCheckout({ orderId, product, customer, successUrl, cancelUrl }) {
+  async createCheckout({ orderId, locale, product, customer, successUrl, cancelUrl }) {
     const stripe = getStripe();
 
     const lineItem: Stripe.Checkout.SessionCreateParams.LineItem = product.stripePriceId
@@ -31,6 +31,8 @@ export const stripeProvider: PaymentProvider = {
       mode: "payment",
       line_items: [lineItem],
       customer_email: customer.email,
+      // Stripe's checkout page has no Arabic, so it picks the browser language.
+      locale: locale === "fr" ? "fr" : locale === "en" ? "en" : "auto",
       client_reference_id: orderId,
       metadata: { orderId },
       success_url: successUrl,

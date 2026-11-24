@@ -1,3 +1,4 @@
+import { providerLabel } from "@/lib/payments/labels";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@brand/db";
@@ -63,7 +64,7 @@ export default async function ClientPage({ params, searchParams }: Props) {
       amountCents: o.amountCents,
       currency: o.currency,
       status: o.status,
-      method: o.provider === "lemonsqueezy" ? "Lemon Squeezy" : "Stripe",
+      method: providerLabel(o.provider),
       date: o.paidAt ?? o.createdAt,
       editable: false,
     })),

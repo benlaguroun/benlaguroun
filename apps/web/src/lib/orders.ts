@@ -1,4 +1,5 @@
 import { prisma } from "@brand/db";
+import { sendReceiptEmails } from "@/lib/receipt";
 
 /**
  * Mark an order as paid and grant the entitlement. Safe to call more than
@@ -23,6 +24,9 @@ export async function fulfillOrder(orderId: string, providerRef?: string | null)
       create: { userId: order.userId, productId: order.productId, orderId: order.id },
     }),
   ]);
+
+  // Safe to call every time: it only sends once per order.
+  await sendReceiptEmails(order.id);
 
   return { ok: true as const };
 }

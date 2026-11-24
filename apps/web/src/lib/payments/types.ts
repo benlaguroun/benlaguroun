@@ -1,5 +1,8 @@
+export type ProviderName = "stripe" | "paypal" | "lemonsqueezy";
+
 export type CheckoutInput = {
   orderId: string;
+  locale: string;
   product: {
     name: string;
     description: string;
@@ -9,14 +12,16 @@ export type CheckoutInput = {
     lemonVariantId?: string | null;
   };
   customer: { email: string; name: string };
+  /** Where the provider sends the buyer after paying. */
   successUrl: string;
+  /** Where the provider sends the buyer if they back out. */
   cancelUrl: string;
 };
 
 export type CheckoutResult = {
-  /** Hosted checkout page to send the customer to. */
+  /** Hosted payment page to send the customer to. */
   url: string;
-  /** Provider-side id if known at creation time. */
+  /** Provider-side id (Stripe session, PayPal order...), saved on the order. */
   providerRef?: string;
 };
 
@@ -25,6 +30,6 @@ export type CheckoutResult = {
  * app/api/webhooks/<provider>/route.ts and call fulfillOrder().
  */
 export interface PaymentProvider {
-  name: "stripe" | "lemonsqueezy";
+  name: ProviderName;
   createCheckout(input: CheckoutInput): Promise<CheckoutResult>;
 }

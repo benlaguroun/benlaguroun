@@ -40,13 +40,23 @@ Content from the database (products, lessons, projects) is translated through a 
 
 The look is a dark glassmorphism theme: an animated aurora background, glass cards with a spotlight and glowing border that follow the cursor, scroll-reveal animations, and an animated diagram of your local network on the homepage. Colours and fonts live at the top of `src/app/globals.css`; motion is switched off automatically for visitors who prefer reduced motion. Fonts (Space Grotesk, Inter, Cairo, JetBrains Mono) are loaded through `next/font/google`, so the first run needs internet access.
 
-## Payments: Stripe or Lemon Squeezy
+## Payments: Stripe and PayPal
 
-Set `PAYMENT_PROVIDER` to `stripe` or `lemonsqueezy` and no code changes are needed. Both implement the interface in `src/lib/payments/types.ts`, and both webhooks call the same `fulfillOrder` function, which is safe to run twice.
+**How a purchase works.** The buyer opens a template or course, presses Buy, signs in if needed, lands on `/checkout/<product>` (order summary, choice of payment method, Pay button), is sent to the provider's secure page, and comes back to a thank-you page with the course link or download. The price is always read from the database, never from the browser.
+
+A payment method is offered as soon as its keys are in your environment, so you can run Stripe, PayPal or both (and Lemon Squeezy as a third) with no code changes. Set `PAYMENT_PROVIDERS="stripe,paypal"` if you want to limit the list. All webhooks call the same `fulfillOrder` function, which is safe to run twice.
+
+**PayPal.** Create an app in the PayPal developer dashboard and set `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` and `PAYPAL_ENV` (`sandbox` to test, `live` for real money). The buyer approves on paypal.com, returns to `/api/paypal/return`, and the site captures the payment and checks the amount before unlocking access. As a safety net, add a webhook to `/api/webhooks/paypal` for `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.REFUNDED` and `PAYMENT.CAPTURE.REVERSED`, and put its id in `PAYPAL_WEBHOOK_ID`. Orders must be in a currency PayPal supports (USD, EUR, GBP...).
 
 **Stripe.** Set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`. Point a webhook at `/api/webhooks/stripe` for `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `charge.refunded`. Locally, `stripe listen --forward-to localhost:3000/api/webhooks/stripe` gives you the secret. You handle sales tax and VAT yourself.
 
 **Lemon Squeezy.** It acts as merchant of record, so it collects and remits tax for you, at a higher fee. Set `LEMONSQUEEZY_API_KEY`, `LEMONSQUEEZY_STORE_ID` and `LEMONSQUEEZY_WEBHOOK_SECRET`. Create a variant for each product in their dashboard and paste its id into the product's `lemonVariantId`. Point a webhook at `/api/webhooks/lemonsqueezy` for `order_created` and `order_refunded`. The price is overridden per checkout so it always matches your catalog.
+
+## Emails
+
+Set `BREVO_API_KEY` and `EMAIL_FROM` (a sender you verified in Brevo) and the site sends: a receipt to every buyer in the language they bought in, a short "new sale" note to you, and a "new message" note to you for each contact-form message (replying to it answers the visitor). `ADMIN_NOTIFY_EMAIL` chooses where your notes go. Without these keys nothing is sent and everything else works as before. A receipt is sent once per order, even when both the return page and the webhook confirm it.
+
+**PayPal and currencies.** PayPal can't charge every currency (Moroccan dirham, for example). When a product is priced in an unsupported currency, PayPal is simply not offered for it and the buyer sees the other methods.
 
 ## Adding your own products and lessons
 
