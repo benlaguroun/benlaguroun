@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { site } from "@/config/site";
+import { activeSocial, site } from "@/config/site";
 import { lp, type Locale } from "@/i18n/config";
 import { getDict } from "@/i18n/dictionaries";
 
@@ -33,7 +33,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         <div>
           <p className="eyebrow">{t.footer.elsewhere}</p>
           <ul className="mt-4 space-y-2.5 text-sm">
-            {site.social.map((s) => (
+            {activeSocial().map((s) => (
               <li key={s.href}>
                 <a href={s.href} target="_blank" rel="noreferrer" className="text-mute transition hover:text-ink">
                   {s.label} ↗

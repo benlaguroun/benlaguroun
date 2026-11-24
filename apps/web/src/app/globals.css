@@ -512,3 +512,39 @@ body {
     opacity: 1;
   }
 }
+
+/* ------------------------------------------------------------------
+   Hero portrait: photo inside a slowly rotating gradient ring
+   ------------------------------------------------------------------ */
+.photo-ring {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  padding: 2px;
+  box-shadow: 0 40px 90px -30px rgb(139 92 246 / 0.55);
+}
+.photo-ring::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(from 0deg, #8b5cf6, #22d3ee, #f472b6, #8b5cf6);
+  animation: spin 9s linear infinite;
+}
+.photo-ring > .inner {
+  position: relative;
+  overflow: hidden;
+  border-radius: calc(2rem - 2px);
+  background: var(--color-panel);
+}
+.photo-ring > .inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgb(5 6 11 / 0.85));
+  pointer-events: none;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

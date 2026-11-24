@@ -11,6 +11,7 @@ export const fr: Dict = {
     templates: "Modèles",
     courses: "Formations",
     work: "Réalisations",
+    about: "À propos",
     contact: "Contact",
     login: "Connexion",
     signup: "Inscription",
@@ -29,6 +30,9 @@ export const fr: Dict = {
     roles: ["Ingénieur full-stack", "Ingénieur IA", "Créateur de plateformes", "Formateur"],
     ctaPrimary: "Travailler avec moi",
     ctaSecondary: "Découvrir les formations",
+    chips: ["Full-stack", "Ingénieur IA", "Testé en réseau local"],
+    photoAlt: "Portrait de {name}",
+    follow: "Retrouvez-moi sur",
   },
   pillars: {
     eyebrow: "Approche",
@@ -57,6 +61,39 @@ export const fr: Dict = {
       "Hébergé sur mon propre matériel pour les clients qui le souhaitent.",
       "Itération rapide : tests sur de vrais appareils via le réseau local.",
     ],
+  },
+  about: {
+    eyebrow: "À propos",
+    title: "Ingénieur, bâtisseur et formateur",
+    intro: [
+      "Je suis ingénieur full-stack et IA indépendant. Je conçois et déploie des plateformes complètes propulsées par l'IA : systèmes multi-établissements, flux d'agents, couches de données et interfaces que les gens utilisent vraiment.",
+      "Je travaille en monorepo, je teste tout sur mon propre réseau et mon propre matériel, et je livre moi-même en production. Pour les clients qui le souhaitent, j'héberge aussi les plateformes sur ma propre infrastructure.",
+      "En parallèle des projets clients, je construis mes propres produits et j'enseigne ce que j'apprends sur la création d'un business en ligne, à travers des formations et des modèles.",
+    ],
+    what: {
+      eyebrow: "Ce que je fais",
+      title: "Trois façons de vous aider",
+      items: [
+        { t: "Construire", d: "Plateformes sur mesure, sites web et automatisation IA, du premier croquis à la production." },
+        { t: "Héberger", d: "Un fonctionnement sur une infrastructure que je gère, pour un système qui marche sans le casse-tête technique." },
+        { t: "Enseigner", d: "Des formations et des modèles qui transforment mon expérience en étapes concrètes à suivre." },
+      ],
+    },
+    toolkit: { eyebrow: "Boîte à outils", title: "La stack en laquelle j'ai confiance" },
+    setup: {
+      eyebrow: "Mon installation",
+      title: "Là où tout est testé",
+      body: "Chaque projet naît d'abord sur mon réseau local avant d'arriver sur un serveur que vous pouvez visiter.",
+    },
+    social: {
+      eyebrow: "Retrouvez-moi en ligne",
+      title: "Restons en contact",
+      body: "Découvrez mon code, mon profil professionnel et mes actualités.",
+      github: "Code et projets",
+      linkedin: "Profil professionnel",
+      facebook: "Actualités et communauté",
+    },
+    cta: { title: "Envie de travailler ensemble ?", button: "Me contacter" },
   },
   cta: {
     title: "Un projet en tête ?",

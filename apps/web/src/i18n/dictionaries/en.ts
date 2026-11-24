@@ -9,6 +9,7 @@ export const en = {
     templates: "Templates",
     courses: "Courses",
     work: "Work",
+    about: "About",
     contact: "Contact",
     login: "Log in",
     signup: "Sign up",
@@ -27,6 +28,9 @@ export const en = {
     roles: ["Full-stack engineer", "AI engineer", "Platform builder", "Course creator"],
     ctaPrimary: "Work with me",
     ctaSecondary: "Explore courses",
+    chips: ["Full-stack", "AI engineer", "Tested on LAN"],
+    photoAlt: "Portrait of {name}",
+    follow: "Find me on",
   },
   pillars: {
     eyebrow: "Approach",
@@ -55,6 +59,39 @@ export const en = {
       "Hosted on my own hardware for clients who want it.",
       "Fast iteration: test on real devices over the local network.",
     ],
+  },
+  about: {
+    eyebrow: "About me",
+    title: "Engineer, builder and teacher",
+    intro: [
+      "I'm an independent full-stack and AI engineer. I build and deploy complete AI-powered platforms: multi-tenant systems, agent workflows, data layers and the interfaces people actually use.",
+      "I work in a monorepo, test everything on my own network and hardware, and ship to production myself. For clients who want it, I also host the platforms on my own infrastructure.",
+      "Alongside client work I build my own products and teach what I learn about building a business online, through courses and templates.",
+    ],
+    what: {
+      eyebrow: "What I do",
+      title: "Three ways I can help",
+      items: [
+        { t: "Build", d: "Custom platforms, websites and AI automation, from first sketch to production." },
+        { t: "Host", d: "Run on infrastructure I manage, so you get a working system without the ops headache." },
+        { t: "Teach", d: "Courses and templates that turn what I've learned into steps you can follow." },
+      ],
+    },
+    toolkit: { eyebrow: "Toolkit", title: "The stack I trust" },
+    setup: {
+      eyebrow: "My setup",
+      title: "Where it all gets tested",
+      body: "Every project starts life on my local network before it reaches a server you can visit.",
+    },
+    social: {
+      eyebrow: "Find me online",
+      title: "Let's connect",
+      body: "See my code, my professional profile and my updates.",
+      github: "Code and projects",
+      linkedin: "Professional profile",
+      facebook: "Updates and community",
+    },
+    cta: { title: "Want to work together?", button: "Get in touch" },
   },
   cta: {
     title: "Have a project in mind?",

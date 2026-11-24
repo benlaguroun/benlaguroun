@@ -3,7 +3,7 @@ import { prisma } from "@brand/db";
 import { site } from "@/config/site";
 import { lp } from "@/i18n/config";
 import { localize } from "@/i18n/content";
-import { getDict } from "@/i18n/dictionaries";
+import { fill, getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
 import { Arrow } from "@/components/icons";
 import { NetworkDiagram } from "@/components/network-diagram";
@@ -11,7 +11,8 @@ import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { TechMarquee } from "@/components/tech-marquee";
-import { Terminal } from "@/components/terminal";
+import { ProfilePhoto } from "@/components/profile-photo";
+import { SocialIcons } from "@/components/social-links";
 import { TypedRoles } from "@/components/typed-roles";
 
 export const dynamic = "force-dynamic";
@@ -62,11 +63,52 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {t.hero.ctaSecondary}
                 </Link>
               </div>
+              <div className="mt-8 flex items-center gap-4">
+                <span className="text-sm text-mute">{t.hero.follow}</span>
+                <SocialIcons />
+              </div>
             </Reveal>
           </div>
 
           <Reveal delay={200}>
-            <Terminal />
+            <div className="relative mx-auto w-full max-w-[22rem] lg:max-w-sm">
+              <span className="deco -inset-8 rounded-full bg-gradient-to-br from-iris/30 via-transparent to-aqua/25 blur-3xl" />
+
+              <div className="photo-ring">
+                <div className="inner aspect-[4/5]">
+                  <ProfilePhoto alt={fill(t.hero.photoAlt, { name: site.name })} priority />
+                </div>
+              </div>
+
+              {/* Floating skill chips */}
+              <span className="glass node-float absolute -start-4 top-10 !rounded-full px-4 py-2 font-mono text-xs sm:-start-10">
+                {t.hero.chips[0]}
+              </span>
+              <span
+                className="glass node-float absolute -end-3 top-1/2 !rounded-full px-4 py-2 font-mono text-xs sm:-end-9"
+                style={{ animationDelay: "-2.4s" }}
+              >
+                {t.hero.chips[1]}
+              </span>
+              <span
+                className="glass node-float absolute -start-2 bottom-24 !rounded-full px-4 py-2 font-mono text-xs sm:-start-8"
+                style={{ animationDelay: "-4.8s" }}
+              >
+                <span className="live-dot me-2 inline-block align-middle" />
+                {t.hero.chips[2]}
+              </span>
+
+              {/* Name card */}
+              <div className="glass absolute inset-x-5 -bottom-5 flex items-center justify-between gap-3 px-5 py-3.5">
+                <div className="min-w-0">
+                  <p className="display truncate text-base font-semibold">{site.name}</p>
+                  <p className="truncate font-mono text-[0.68rem] text-aqua">{t.hero.roles[1]}</p>
+                </div>
+                <Link href={lp(locale, "/about")} className="btn btn-glass !px-3.5 !py-2 text-xs">
+                  {t.nav.about} <Arrow />
+                </Link>
+              </div>
+            </div>
           </Reveal>
         </div>
 
