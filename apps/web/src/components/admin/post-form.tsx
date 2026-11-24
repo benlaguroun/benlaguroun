@@ -1,5 +1,6 @@
 import type { Post } from "@brand/db";
 import { savePost } from "@/app/[locale]/admin/post-actions";
+import { ImageField } from "./image-fields";
 import { TranslationFields } from "./translation-fields";
 
 export function PostForm({ locale, post }: { locale: string; post?: Post }) {
@@ -30,10 +31,7 @@ export function PostForm({ locale, post }: { locale: string; post?: Post }) {
           <label htmlFor="tags" className="label">Tags <span className="text-mute">(comma separated, up to 6)</span></label>
           <input id="tags" name="tags" dir="ltr" defaultValue={post?.tags.join(", ")} placeholder="AI, Next.js, Business" className="field" />
         </div>
-        <div>
-          <label htmlFor="coverUrl" className="label">Cover image <span className="text-mute">(optional)</span></label>
-          <input id="coverUrl" name="coverUrl" dir="ltr" defaultValue={post?.coverUrl ?? ""} placeholder="https://… or /images/cover.png" className="field" />
-        </div>
+        <ImageField name="coverUrl" label="Cover image (optional)" defaultValue={post?.coverUrl} />
       </div>
 
       <div>

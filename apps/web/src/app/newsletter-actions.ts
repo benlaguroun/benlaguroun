@@ -1,26 +1,13 @@
 "use server";
 
-import { headers } from "next/headers";
 import { after } from "next/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@brand/db";
 import { defaultLocale, isLocale, lp, type Locale } from "@/i18n/config";
 import { sendWelcomeEmail } from "@/lib/newsletter";
+import { clientIp, rateLimited } from "@/lib/rate-limit";
 
 export type SubscribeState = { ok: true } | { ok: false; code: "email" | "failed" } | null;
-
-// A small in-memory brake against scripts filling the list: 5 sign-ups per
-// address of the visitor every 10 minutes. It resets when the server restarts,
-// which is fine for this purpose.
-const hits = new Map<string, number[]>();
-function tooMany(key: string) {
-  const now = Date.now();
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < 10 * 60_000);
-  recent.push(now);
-  hits.set(key, recent);
-  if (hits.size > 5000) hits.clear();
-  return recent.length > 5;
-}
 
 export async function subscribe(_prev: SubscribeState, fd: FormData): Promise<SubscribeState> {
   // Honeypot: people leave this hidden field empty.
@@ -29,9 +16,8 @@ export async function subscribe(_prev: SubscribeState, fd: FormData): Promise<Su
   const email = String(fd.get("email") ?? "").trim().toLowerCase();
   if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, code: "email" };
 
-  const h = await headers();
-  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
-  if (tooMany(ip)) return { ok: false, code: "failed" };
+  // At most 5 sign-ups per visitor every 10 minutes.
+  if (rateLimited(`newsletter:${await clientIp()}`, 5, 10 * 60_000)) return { ok: false, code: "failed" };
 
   const l = String(fd.get("locale") ?? "");
   const locale: Locale = isLocale(l) ? l : defaultLocale;

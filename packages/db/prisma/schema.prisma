@@ -231,7 +231,8 @@ model Project {
   summary   String
   body      String
   tags      String[]
-  imageUrl  String?
+  imageUrl  String?   // cover image
+  images    String[]  // more screenshots, shown as a gallery
   liveUrl   String?
   translations Json?
   featured  Boolean  @default(false)

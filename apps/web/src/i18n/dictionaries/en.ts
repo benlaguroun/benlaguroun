@@ -338,6 +338,7 @@ export const en = {
       missing: "Please fill in your name, email and a short message.",
       email: "That email address doesn't look right.",
       long: "Please keep your message under 5000 characters.",
+      many: "Too many messages in a short time. Please wait a few minutes and try again.",
     },
   },
   checkout: {

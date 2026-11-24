@@ -34,6 +34,10 @@ export default async function PortfolioPage({ params }: Props) {
             <Reveal key={p.id} delay={(i % 2) * 100}>
               <Link href={lp(locale, `/portfolio/${p.slug}`)} className="glass spot block h-full p-8">
                 <span className="deco -end-10 -top-10 h-36 w-36 rounded-full bg-iris/25 blur-3xl" />
+                {p.imageUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={p.imageUrl} alt="" loading="lazy" className="mb-6 aspect-video w-full rounded-xl border border-line object-cover" />
+                )}
                 {p.client && <p className="eyebrow">{p.client}</p>}
                 <h2 className="display mt-3 text-2xl font-semibold">{p.title}</h2>
                 <p className="mt-3 leading-relaxed text-mute">{p.summary}</p>

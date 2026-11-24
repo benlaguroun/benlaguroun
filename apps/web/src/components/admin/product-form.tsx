@@ -1,5 +1,6 @@
 import type { Product, ProductType } from "@brand/db";
 import { saveProduct } from "@/app/[locale]/admin/catalog-actions";
+import { ImageField } from "./image-fields";
 import { TranslationFields } from "./translation-fields";
 
 const typeLabel: Record<ProductType, string> = { SERVICE: "Service", TEMPLATE: "Template", COURSE: "Course" };
@@ -93,17 +94,7 @@ export function ProductForm({
         </div>
       </div>
 
-      <div>
-        <label htmlFor="imageUrl" className="label">Cover image <span className="text-mute">(optional)</span></label>
-        <input
-          id="imageUrl"
-          name="imageUrl"
-          dir="ltr"
-          defaultValue={product?.imageUrl ?? ""}
-          placeholder="https://… or /images/cover.png"
-          className="field"
-        />
-      </div>
+      <ImageField name="imageUrl" label="Cover image (optional)" defaultValue={product?.imageUrl} />
 
       {type === "TEMPLATE" && (
         <div className="grid gap-5 sm:grid-cols-2">

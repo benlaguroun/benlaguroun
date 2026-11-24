@@ -65,9 +65,23 @@ export default async function ProjectPage({ params }: Props) {
         <div className="mt-6 flex flex-wrap gap-1.5" dir="ltr">
           {project.tags.map((tag) => <span key={tag} className="chip">{tag}</span>)}
         </div>
+        {project.imageUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={project.imageUrl} alt={project.title} className="mt-10 w-full rounded-2xl border border-line" />
+        )}
         <div className="mt-10 space-y-4 text-lg leading-relaxed">
           {paragraphs(project.body).map((para, i) => <p key={i}>{para}</p>)}
         </div>
+        {project.images.length > 0 && (
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {project.images.map((src, i) => (
+              <a key={`${src}-${i}`} href={src} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-2xl border border-line">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt={`${project.title} ${i + 1}`} loading="lazy" className="w-full transition hover:scale-[1.02]" />
+              </a>
+            ))}
+          </div>
+        )}
         <div className="mt-10 flex flex-wrap gap-3">
           {project.liveUrl ? (
             <a href={project.liveUrl} target="_blank" rel="noreferrer" className="btn btn-primary">

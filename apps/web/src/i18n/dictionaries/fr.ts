@@ -340,6 +340,7 @@ export const fr: Dict = {
       missing: "Merci de renseigner votre nom, votre e-mail et un court message.",
       email: "Cette adresse e-mail semble invalide.",
       long: "Merci de limiter votre message à 5000 caractères.",
+      many: "Trop de messages en peu de temps. Veuillez patienter quelques minutes et réessayer.",
     },
   },
   checkout: {
