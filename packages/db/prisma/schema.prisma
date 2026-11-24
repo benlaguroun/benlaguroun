@@ -103,6 +103,7 @@ model Product {
   currency    String      @default("usd")
   imageUrl    String?
   features    String[]
+  translations Json?       // { fr: {name, tagline, description, features}, ar: {...} }
   deliveryUrl String?     // templates: download link handed over after purchase
   previewUrl  String?     // templates: live demo
   published   Boolean     @default(true)
@@ -134,6 +135,7 @@ model Module {
   courseId String
   course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   title    String
+  translations Json?
   position Int
   lessons  Lesson[]
 
@@ -150,6 +152,7 @@ model Lesson {
   content     String           // plain text / markdown-ish body
   videoUrl    String?          // embed URL (YouTube, Vimeo, Bunny, Mux...)
   durationMin Int?
+  translations Json?
   isPreview   Boolean          @default(false) // free to watch without buying
   position    Int
   progress    LessonProgress[]
@@ -227,6 +230,7 @@ model Project {
   tags      String[]
   imageUrl  String?
   liveUrl   String?
+  translations Json?
   featured  Boolean  @default(false)
   position  Int      @default(0)
   createdAt DateTime @default(now())

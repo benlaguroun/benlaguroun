@@ -32,6 +32,14 @@ To make yourself an admin, sign up on the site, then set `role = 'ADMIN'` on you
 
 Edit `apps/web/src/config/site.ts` for your name, tagline, email, navigation and social links. Edit the colour and font tokens at the top of `apps/web/src/app/globals.css` to re-skin the whole site. The homepage copy lives in `apps/web/src/app/page.tsx`.
 
+## Languages and design
+
+The site speaks English, French and Arabic, and Arabic switches the whole layout to right-to-left. Every page lives under `/en`, `/fr` or `/ar`. Visitors without a prefix are redirected to their saved language, then their browser language, then English (see `src/proxy.ts`). The interface text lives in `src/i18n/dictionaries/{en,fr,ar}.ts`; add a key to `en.ts` first and TypeScript will then insist you add it to the other two.
+
+Content from the database (products, lessons, projects) is translated through a `translations` JSON column on each row, for example `{ "fr": { "name": "...", "tagline": "..." }, "ar": { ... } }`. Any field you leave untranslated falls back to English. The seed file shows the shape. After changing the schema run `npm run db:push` again.
+
+The look is a dark glassmorphism theme: an animated aurora background, glass cards with a spotlight and glowing border that follow the cursor, scroll-reveal animations, and an animated diagram of your local network on the homepage. Colours and fonts live at the top of `src/app/globals.css`; motion is switched off automatically for visitors who prefer reduced motion. Fonts (Space Grotesk, Inter, Cairo, JetBrains Mono) are loaded through `next/font/google`, so the first run needs internet access.
+
 ## Payments: Stripe or Lemon Squeezy
 
 Set `PAYMENT_PROVIDER` to `stripe` or `lemonsqueezy` and no code changes are needed. Both implement the interface in `src/lib/payments/types.ts`, and both webhooks call the same `fulfillOrder` function, which is safe to run twice.

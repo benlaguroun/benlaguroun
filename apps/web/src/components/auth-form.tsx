@@ -4,8 +4,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { lp, type Locale } from "@/i18n/config";
+import type { Dict } from "@/i18n/dictionaries";
 
-export function AuthForm({ mode, next }: { mode: "login" | "signup"; next: string }) {
+export function AuthForm({
+  mode,
+  next,
+  locale,
+  t,
+}: {
+  mode: "login" | "signup";
+  next: string;
+  locale: Locale;
+  t: Dict["auth"];
+}) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -26,7 +38,7 @@ export function AuthForm({ mode, next }: { mode: "login" | "signup"; next: strin
         : await authClient.signIn.email({ email, password });
 
     if (result.error) {
-      setError(result.error.message ?? "Something went wrong. Please try again.");
+      setError(t.error);
       setLoading(false);
       return;
     }
@@ -38,41 +50,42 @@ export function AuthForm({ mode, next }: { mode: "login" | "signup"; next: strin
   const other = mode === "signup" ? "/login" : "/signup";
 
   return (
-    <form onSubmit={onSubmit} className="card space-y-4 p-7">
+    <form onSubmit={onSubmit} className="glass space-y-5 p-8">
       {mode === "signup" && (
         <div>
-          <label htmlFor="name" className="label">Name</label>
+          <label htmlFor="name" className="label">{t.name}</label>
           <input id="name" name="name" required autoComplete="name" className="field" />
         </div>
       )}
       <div>
-        <label htmlFor="email" className="label">Email</label>
-        <input id="email" name="email" type="email" required autoComplete="email" className="field" />
+        <label htmlFor="email" className="label">{t.email}</label>
+        <input id="email" name="email" type="email" required autoComplete="email" dir="ltr" className="field" />
       </div>
       <div>
-        <label htmlFor="password" className="label">Password</label>
+        <label htmlFor="password" className="label">{t.password}</label>
         <input
           id="password"
           name="password"
           type="password"
           required
           minLength={8}
+          dir="ltr"
           autoComplete={mode === "signup" ? "new-password" : "current-password"}
           className="field"
         />
-        {mode === "signup" && <p className="mt-1.5 text-xs text-muted">At least 8 characters.</p>}
+        {mode === "signup" && <p className="mt-1.5 text-xs text-mute">{t.hint}</p>}
       </div>
 
-      {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+      {error && <p role="alert" className="text-sm text-rose">{error}</p>}
 
-      <button type="submit" disabled={loading} className="btn-primary w-full">
-        {loading ? "Please wait…" : mode === "signup" ? "Create account" : "Log in"}
+      <button type="submit" disabled={loading} className="btn btn-primary w-full">
+        {loading ? t.wait : mode === "signup" ? t.signupBtn : t.loginBtn}
       </button>
 
-      <p className="text-center text-sm text-muted">
-        {mode === "signup" ? "Already have an account? " : "New here? "}
-        <Link href={`${other}?next=${encodeURIComponent(next)}`} className="font-medium text-accent hover:underline">
-          {mode === "signup" ? "Log in" : "Create an account"}
+      <p className="text-center text-sm text-mute">
+        {mode === "signup" ? t.haveAccount : t.newHere}{" "}
+        <Link href={`${lp(locale, other)}?next=${encodeURIComponent(next)}`} className="font-medium text-aqua hover:underline">
+          {mode === "signup" ? t.loginBtn : t.signupBtn}
         </Link>
       </p>
     </form>

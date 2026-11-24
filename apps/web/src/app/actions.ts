@@ -4,14 +4,14 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@brand/db";
 import { getSession } from "@/lib/session";
 import { userOwns } from "@/lib/access";
+import { locales } from "@/i18n/config";
 
-export type LeadState = { ok: boolean; message: string } | null;
+// The server returns a code; the form turns it into text in the visitor's language.
+export type LeadState = { ok: true } | { ok: false; code: "missing" | "email" | "long" } | null;
 
 export async function createLead(_prev: LeadState, formData: FormData): Promise<LeadState> {
   // Honeypot: real people leave this hidden field empty.
-  if (String(formData.get("website") ?? "").trim()) {
-    return { ok: true, message: "Thanks! We'll be in touch soon." };
-  }
+  if (String(formData.get("website") ?? "").trim()) return { ok: true };
 
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
@@ -19,18 +19,12 @@ export async function createLead(_prev: LeadState, formData: FormData): Promise<
   const interest = String(formData.get("interest") ?? "").trim() || null;
   const budget = String(formData.get("budget") ?? "").trim() || null;
 
-  if (!name || !email || !message) {
-    return { ok: false, message: "Please fill in your name, email and a short message." };
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { ok: false, message: "That email address doesn't look right." };
-  }
-  if (message.length > 5000) {
-    return { ok: false, message: "Please keep your message under 5000 characters." };
-  }
+  if (!name || !email || !message) return { ok: false, code: "missing" };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, code: "email" };
+  if (message.length > 5000) return { ok: false, code: "long" };
 
   await prisma.lead.create({ data: { name, email, message, interest, budget } });
-  return { ok: true, message: "Thanks! Your message is in and you'll hear back shortly." };
+  return { ok: true };
 }
 
 export async function markLessonComplete(lessonId: string, courseSlug: string) {
@@ -51,6 +45,6 @@ export async function markLessonComplete(lessonId: string, courseSlug: string) {
     create: { userId: session.user.id, lessonId },
   });
 
-  revalidatePath(`/learn/${courseSlug}`, "layout");
-  revalidatePath("/dashboard");
+  for (const locale of locales) revalidatePath(`/${locale}/learn/${courseSlug}`, "layout");
+  for (const locale of locales) revalidatePath(`/${locale}/dashboard`);
 }

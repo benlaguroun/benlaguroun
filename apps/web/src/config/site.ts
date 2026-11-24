@@ -1,21 +1,30 @@
 // One place to define your brand. Edit this file first.
 export const site = {
-  name: "Your Brand",
-  tagline: "Websites, templates and courses to help your business grow.",
-  description:
-    "Custom web platforms, ready-made templates and practical business courses from an independent developer and builder.",
-  url: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  name: "Ben Laguroun",
   email: "hello@example.com",
-  founder: "Your Name",
+  founder: "Ben Laguroun",
   social: [
     { label: "GitHub", href: "https://github.com/benlaguroun" },
     { label: "LinkedIn", href: "https://linkedin.com" },
   ],
+  // Technologies shown in the scrolling strip on the homepage.
+  stack: [
+    "Turborepo",
+    "TypeScript",
+    "Next.js",
+    "Tailwind CSS",
+    "better-auth",
+    "Prisma",
+    "PostgreSQL",
+    "AI agents",
+    "Multi-tenant",
+    "Self-hosted",
+  ],
   nav: [
-    { label: "Services", href: "/services" },
-    { label: "Templates", href: "/templates" },
-    { label: "Courses", href: "/courses" },
-    { label: "Work", href: "/portfolio" },
-    { label: "Contact", href: "/contact" },
+    { key: "services", href: "/services" },
+    { key: "templates", href: "/templates" },
+    { key: "courses", href: "/courses" },
+    { key: "work", href: "/portfolio" },
+    { key: "contact", href: "/contact" },
   ],
 } as const;
