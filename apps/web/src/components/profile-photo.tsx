@@ -18,7 +18,7 @@ export function ProfilePhoto({ alt, priority = false }: { alt: string; priority?
         height={1000}
         priority={priority}
         sizes="(min-width: 1024px) 420px, 80vw"
-        className="h-full w-full object-cover"
+        className="h-full w-full object-cover object-bottom"
       />
     );
   }

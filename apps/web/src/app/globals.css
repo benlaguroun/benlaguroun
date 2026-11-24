@@ -544,7 +544,7 @@ body {
   overflow: hidden;
   border-radius: 58% 42% 52% 48% / 50% 58% 42% 50%;
   border: 2px solid rgb(255 255 255 / 0.14);
-  background: var(--color-panel);
+  background: linear-gradient(160deg, rgb(139 92 246 / 0.4), rgb(34 211 238 / 0.22) 70%, rgb(10 12 24 / 0.5));
   box-shadow: 0 0 80px -10px rgb(34 211 238 / 0.35);
 }
 .blob-outline {
