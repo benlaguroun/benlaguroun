@@ -1,68 +1,49 @@
-<h1 align="center">Hi there, I'm Mohamed  </h1>
+# Brand Platform
 
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=benlaguroun&color=blue" alt="Profile Views" />
-</p>
+One website that works as your portfolio, your services shop, your template store and your course platform. Built as a Turborepo with Next.js, TypeScript, Tailwind CSS v4, better-auth, Prisma and PostgreSQL.
 
-<p align="center">
-  Software Engineer ( Front-End) | React & Next.js | Building smooth web experiences with purpose & creativity.
-</p>
+## What is inside
 
----
+The site has public pages for your brand (home, work, services, templates, courses, contact) and a members area (login, library, lesson player with progress tracking). Everything you sell lives in one `Product` table with a type of `SERVICE`, `TEMPLATE` or `COURSE`. Services end in an inquiry form that saves leads to the database. Templates and courses end in a checkout, and a successful payment creates an `Entitlement` that unlocks the download or the lessons.
 
-###  About Me
+```
+apps/web          Next.js site (pages, API routes, components)
+packages/db       Prisma schema, generated client, seed data
+```
 
-I'm a passionate **Frontend Software Engineer** focused on building modern, responsive, and interactive web applications. I specialize in **React.js**, **Next.js**, and **TypeScript**, and I’m deeply interested in educational tech, PWA development, and creating products that improve lives.
+## Getting started
 
-###  Current Projects
+1. Start a PostgreSQL database and copy `.env.example` into `apps/web/.env.local` and `packages/db/.env`, filling in `DATABASE_URL` and `BETTER_AUTH_SECRET`.
+2. Install and prepare the database:
 
--  **Print-on-Demand E-Commerce Website** using **Printify API** + **Next.js**
--  **French Learning App for Arabic Speakers** (React + Supabase + PWA)
--  **Gym & Fitness App** with AI-based feedback system
--  **Dental Website** with clean UI and advanced components
+   ```bash
+   npm install
+   npm run db:generate
+   npm run db:push
+   npm run db:seed
+   npm run dev
+   ```
 
-###  Growing With
+3. Open http://localhost:3000. The seed loads sample services, templates, one course and three portfolio projects so you can see everything working. Replace them with your own.
 
--  Progressive Web Apps (PWAs)
--  API Integration & Data Handling
--  AI & Chatbot Interfaces
--  UX for Mobile-first Applications
+To make yourself an admin, sign up on the site, then set `role = 'ADMIN'` on your row in the `user` table. Admins can open every course without buying it.
 
-###  Tech Stack
+## Branding it
 
-![React](https://img.shields.io/badge/-React-61DAFB?style=flat&logo=react&logoColor=000)
-![Next.js](https://img.shields.io/badge/-Next.js-000000?style=flat&logo=next.js)
-![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat&logo=typescript&logoColor=fff)
-![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=000)
-![HTML5](https://img.shields.io/badge/-HTML5-E34F26?style=flat&logo=html5&logoColor=fff)
-![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat&logo=css3)
-![Bootstrap](https://img.shields.io/badge/-Bootstrap-563D7C?style=flat&logo=bootstrap)
-![Tailwind CSS](https://img.shields.io/badge/-Tailwind%20CSS-38B2AC?style=flat&logo=tailwind-css)
-![Node.js](https://img.shields.io/badge/-Node.js-339933?style=flat&logo=node.js)
-![Supabase](https://img.shields.io/badge/-Supabase-3ECF8E?style=flat&logo=supabase&logoColor=000)
-![Git](https://img.shields.io/badge/-Git-F05032?style=flat&logo=git&logoColor=fff)
+Edit `apps/web/src/config/site.ts` for your name, tagline, email, navigation and social links. Edit the colour and font tokens at the top of `apps/web/src/app/globals.css` to re-skin the whole site. The homepage copy lives in `apps/web/src/app/page.tsx`.
 
----
+## Payments: Stripe or Lemon Squeezy
 
-###  GitHub Stats
+Set `PAYMENT_PROVIDER` to `stripe` or `lemonsqueezy` and no code changes are needed. Both implement the interface in `src/lib/payments/types.ts`, and both webhooks call the same `fulfillOrder` function, which is safe to run twice.
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=benlaguroun&show_icons=true&theme=radical" alt="GitHub Stats" />
-</p>
+**Stripe.** Set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`. Point a webhook at `/api/webhooks/stripe` for `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `charge.refunded`. Locally, `stripe listen --forward-to localhost:3000/api/webhooks/stripe` gives you the secret. You handle sales tax and VAT yourself.
 
----
+**Lemon Squeezy.** It acts as merchant of record, so it collects and remits tax for you, at a higher fee. Set `LEMONSQUEEZY_API_KEY`, `LEMONSQUEEZY_STORE_ID` and `LEMONSQUEEZY_WEBHOOK_SECRET`. Create a variant for each product in their dashboard and paste its id into the product's `lemonVariantId`. Point a webhook at `/api/webhooks/lemonsqueezy` for `order_created` and `order_refunded`. The price is overridden per checkout so it always matches your catalog.
 
-###  Reach Me
+## Adding your own products and lessons
 
--  [Portfolio Website](https://benlaguroun.netlify.app/)
--  [LinkedIn](https://www.linkedin.com/in/mohamed-benlaguroun/)
--  [Twitter](https://x.com/benlaguroun)
--  Email: benlaguroun@gmail.com  
--  [Upwork](https://www.upwork.com/freelancers/~0173087a6c88534a56?mp_source=share)
+There is no admin UI yet, so for now edit `packages/db/prisma/seed.ts` or use `npx prisma studio` from `packages/db`. For templates, set `deliveryUrl` to the file the buyer should receive (a private storage link works well). For course lessons, `videoUrl` takes an embed URL from YouTube, Vimeo, Bunny or Mux, and `isPreview` makes a lesson free to watch.
 
----
+## Good next steps
 
-<p align="center">
-  <strong>Let's build something amazing together 💡</strong>
-</p>
-tesst 
+An admin dashboard for products, lessons and leads; email notifications for new leads and purchases (Resend works well); signed, expiring download links for templates; email verification and password reset in better-auth; and caching for the public pages once the content is stable (they currently render on every request).

@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Auth (better-auth core tables) + a role column for admin access
+// ---------------------------------------------------------------------------
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions     Session[]
+  accounts     Account[]
+  orders       Order[]
+  entitlements Entitlement[]
+  progress     LessonProgress[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// ---------------------------------------------------------------------------
+// Catalog: services, templates and courses all live in one Product table
+// ---------------------------------------------------------------------------
+
+enum ProductType {
+  SERVICE
+  TEMPLATE
+  COURSE
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  type        ProductType
+  name        String
+  tagline     String
+  description String
+  priceCents  Int?        // null on a service means "custom quote"
+  currency    String      @default("usd")
+  imageUrl    String?
+  features    String[]
+  deliveryUrl String?     // templates: download link handed over after purchase
+  previewUrl  String?     // templates: live demo
+  published   Boolean     @default(true)
+  featured    Boolean     @default(false)
+  position    Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Optional per-provider IDs. If empty, checkout creates the price inline.
+  stripePriceId   String?
+  lemonVariantId  String?
+
+  course       Course?
+  orders       Order[]
+  entitlements Entitlement[]
+
+  @@index([type, published])
+}
+
+model Course {
+  id        String   @id @default(cuid())
+  productId String   @unique
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  modules   Module[]
+}
+
+model Module {
+  id       String   @id @default(cuid())
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title    String
+  position Int
+  lessons  Lesson[]
+
+  @@index([courseId, position])
+}
+
+model Lesson {
+  id          String           @id @default(cuid())
+  moduleId    String
+  module      Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  slug        String
+  title       String
+  summary     String?
+  content     String           // plain text / markdown-ish body
+  videoUrl    String?          // embed URL (YouTube, Vimeo, Bunny, Mux...)
+  durationMin Int?
+  isPreview   Boolean          @default(false) // free to watch without buying
+  position    Int
+  progress    LessonProgress[]
+
+  @@unique([moduleId, slug])
+  @@index([moduleId, position])
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completedAt DateTime @default(now())
+
+  @@unique([userId, lessonId])
+}
+
+// ---------------------------------------------------------------------------
+// Commerce
+// ---------------------------------------------------------------------------
+
+enum OrderStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  productId   String
+  product     Product     @relation(fields: [productId], references: [id])
+  amountCents Int
+  currency    String
+  provider    String      // "stripe" | "lemonsqueezy"
+  providerRef String?     @unique // checkout session / order id from the provider
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  paidAt      DateTime?
+
+  entitlement Entitlement?
+
+  @@index([userId])
+}
+
+// An entitlement = "this user owns this product". Courses and template
+// downloads are gated on it.
+model Entitlement {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderId   String?  @unique
+  order     Order?   @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+// ---------------------------------------------------------------------------
+// Portfolio + inbound leads
+// ---------------------------------------------------------------------------
+
+model Project {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  client    String?
+  summary   String
+  body      String
+  tags      String[]
+  imageUrl  String?
+  liveUrl   String?
+  featured  Boolean  @default(false)
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  interest  String?  // service slug or free text
+  budget    String?
+  message   String
+  createdAt DateTime @default(now())
+}
