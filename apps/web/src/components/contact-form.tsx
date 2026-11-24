@@ -10,10 +10,12 @@ const BUDGET_VALUES = ["Under $1,000", "$1,000 – $3,000", "$3,000 – $10,000"
 export function ContactForm({
   services,
   defaultInterest,
+  defaultMessage,
   t,
 }: {
   services: { slug: string; name: string }[];
   defaultInterest?: string;
+  defaultMessage?: string;
   t: Dict["contactForm"];
 }) {
   const [state, action, pending] = useActionState<LeadState, FormData>(createLead, null);
@@ -63,7 +65,7 @@ export function ContactForm({
 
       <div>
         <label htmlFor="message" className="label">{t.message}</label>
-        <textarea id="message" name="message" required rows={6} className="field" />
+        <textarea id="message" name="message" required rows={6} defaultValue={defaultMessage} className="field" />
       </div>
 
       {/* Honeypot for bots. Hidden from people and screen readers. */}

@@ -209,7 +209,7 @@ export const fr: Dict = {
       body: "Vous préférez l'e-mail ? Écrivez à {email}. Sinon, utilisez le formulaire et je répondrai sous deux jours ouvrés.",
     },
   },
-  project: { want: "Un projet similaire ?", start: "Lancer un projet", visit: "Voir le site", back: "Tous les projets" },
+  project: { want: "Un projet similaire ?", start: "Lancer un projet", visit: "Voir la démo en ligne", demo: "Demander une démo", demoMessage: "Je voudrais voir une démo de {title}.", back: "Tous les projets" },
   learn: {
     progress: "Progression",
     curriculum: "Programme du cours",

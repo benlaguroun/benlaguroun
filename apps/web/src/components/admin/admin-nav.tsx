@@ -8,6 +8,7 @@ const items = [
   { href: "/admin/messages", label: "Messages", badge: true },
   { href: "/admin/clients", label: "Clients" },
   { href: "/admin/payments", label: "Payments" },
+  { href: "/admin/projects", label: "Projects" },
 ];
 
 export function AdminNav({ locale, newMessages }: { locale: string; newMessages: number }) {

@@ -207,7 +207,7 @@ export const en = {
       body: "Prefer email? Write to {email}. Otherwise use the form and I'll reply within two working days.",
     },
   },
-  project: { want: "Want something similar?", start: "Start a project", visit: "Visit live site", back: "All work" },
+  project: { want: "Want something similar?", start: "Start a project", visit: "View live demo", demo: "Request a demo", demoMessage: "I'd like to see a demo of {title}.", back: "All work" },
   learn: {
     progress: "Progress",
     curriculum: "Course curriculum",

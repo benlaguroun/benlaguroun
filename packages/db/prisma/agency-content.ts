@@ -10,6 +10,7 @@ export const projects = [
     summary: "A white-label platform where nine AI agents run support, orders, sales, marketing and more for any business.",
     body:
       "Small businesses can't afford a person for every inbox, order, review and booking. AIOS gives each business a team of AI agents that do that work, with a human approving anything important.\n\nNine agents cover support (reads the inbox and drafts replies), orders, social media, marketing campaigns, analytics reports, sales lead qualification, reviews, daily operations and bookings. Anything risky lands in an approval queue instead of being sent automatically.\n\nIt is multi-tenant from the ground up: every record, cache key, background job and live feed is scoped to one business, so clients never see each other's data. An agency console lets me approve new clients, watch their health score and track recurring revenue. Nine industry templates set a business up in one click.\n\nA privacy-aware router decides where each AI task runs: anything with personal data stays on a local model and never goes to the cloud, long or complex tasks can use a cloud model, and a daily budget caps spend per client.\n\nBuilt with Next.js, Fastify, TypeScript, PostgreSQL with pgvector, Redis and BullMQ, Clerk, Stripe and Cloudflare Workers.",
+    liveUrl: "https://aios-platform-web.vercel.app" as string | null,
     tags: ["Live", "AI agents", "Multi-tenant", "TypeScript", "PostgreSQL"],
     featured: true,
     position: 1,

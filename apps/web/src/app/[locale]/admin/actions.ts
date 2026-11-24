@@ -223,3 +223,28 @@ export async function deletePayment(fd: FormData) {
   refresh();
   redirect(returnTo(fd, lp(localeOf(fd), "/admin/payments")));
 }
+
+// ---------------------------------------------------------------- projects
+
+/** Set or clear the live demo link shown on a portfolio project. */
+export async function updateProjectDemo(fd: FormData) {
+  await assertAdmin();
+  const locale = localeOf(fd);
+  const here = lp(locale, "/admin/projects");
+  const raw = str(fd, "liveUrl");
+
+  let liveUrl: string | null = null;
+  if (raw) {
+    try {
+      const url = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
+      if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error("protocol");
+      liveUrl = url.toString();
+    } catch {
+      fail(here, "That doesn't look like a valid web address.");
+    }
+  }
+
+  await prisma.project.update({ where: { id: str(fd, "id") }, data: { liveUrl } });
+  refresh();
+  redirect(`${here}?saved=1`);
+}

@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ service?: string }>;
+  searchParams: Promise<{ service?: string; demo?: string }>;
 };
 
 export async function generateMetadata({ params }: Pick<Props, "params">): Promise<Metadata> {
@@ -25,7 +25,14 @@ export async function generateMetadata({ params }: Pick<Props, "params">): Promi
 export default async function ContactPage({ params, searchParams }: Props) {
   const locale = await resolveLocale(params);
   const t = getDict(locale);
-  const { service } = await searchParams;
+  const { service, demo } = await searchParams;
+
+  // "Request a demo" on a project page lands here with the message started.
+  let defaultMessage: string | undefined;
+  if (demo) {
+    const row = await prisma.project.findUnique({ where: { slug: demo }, select: { title: true, translations: true } });
+    if (row) defaultMessage = fill(t.project.demoMessage, { title: localize(row, locale).title });
+  }
 
   const rows = await prisma.product.findMany({
     where: { type: "SERVICE", published: true },
@@ -42,7 +49,7 @@ export default async function ContactPage({ params, searchParams }: Props) {
       />
       <div className="wrap max-w-2xl py-14">
         <Reveal>
-          <ContactForm services={services} defaultInterest={service} t={t.contactForm} />
+          <ContactForm services={services} defaultInterest={service} defaultMessage={defaultMessage} t={t.contactForm} />
         </Reveal>
       </div>
     </>

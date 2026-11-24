@@ -9,7 +9,7 @@ import { resolveLocale } from "@/i18n/resolve";
 import { JsonLd } from "@/components/json-ld";
 import { absoluteUrl, breadcrumbJsonLd, pageMetadata, pathFor } from "@/lib/seo";
 import { paragraphs } from "@/lib/format";
-import { ArrowBack } from "@/components/icons";
+import { Arrow, ArrowBack } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 
 export const dynamic = "force-dynamic";
@@ -68,11 +68,17 @@ export default async function ProjectPage({ params }: Props) {
         <div className="mt-10 space-y-4 text-lg leading-relaxed">
           {paragraphs(project.body).map((para, i) => <p key={i}>{para}</p>)}
         </div>
-        {project.liveUrl && (
-          <a href={project.liveUrl} target="_blank" rel="noreferrer" className="btn btn-glass mt-8">
-            {t.project.visit} ↗
-          </a>
-        )}
+        <div className="mt-10 flex flex-wrap gap-3">
+          {project.liveUrl ? (
+            <a href={project.liveUrl} target="_blank" rel="noreferrer" className="btn btn-primary">
+              {t.project.visit} ↗
+            </a>
+          ) : (
+            <Link href={`${lp(locale, "/contact")}?demo=${slug}`} className="btn btn-primary">
+              {t.project.demo} <Arrow />
+            </Link>
+          )}
+        </div>
       </Reveal>
 
       <Reveal delay={100}>

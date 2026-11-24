@@ -419,6 +419,10 @@ async function main() {
   // ---- Portfolio (real projects) -----------------------------------------
   await prisma.project.deleteMany({ where: { slug: { in: sampleProjectSlugs } } });
   for (const p of projects) {
+    // Projects without a demo link get one only if you haven't set your own.
+    if ("liveUrl" in p && p.liveUrl) {
+      await prisma.project.updateMany({ where: { slug: p.slug, liveUrl: null }, data: { liveUrl: p.liveUrl } });
+    }
     await prisma.project.upsert({
       where: { slug: p.slug },
       // Re-running only refreshes translations, so edits you make stay.
