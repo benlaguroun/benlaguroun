@@ -2,7 +2,10 @@
   "name": "brand-platform",
   "private": true,
   "packageManager": "npm@10.9.9",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -10,7 +13,8 @@
     "db:generate": "npm run generate -w @brand/db",
     "db:push": "npm run push -w @brand/db",
     "db:migrate": "npm run migrate -w @brand/db",
-    "db:seed": "npm run seed -w @brand/db"
+    "db:seed": "npm run seed -w @brand/db",
+    "db:admin": "npm run admin -w @brand/db --"
   },
   "devDependencies": {
     "turbo": "^2.11.13",

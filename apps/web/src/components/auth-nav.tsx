@@ -26,8 +26,15 @@ export function AuthNav({ locale, labels }: { locale: Locale; labels: Labels }) 
     );
   }
 
+  const isAdmin = (session.user as { role?: string | null }).role === "ADMIN";
+
   return (
     <div className="flex items-center gap-1.5">
+      {isAdmin && (
+        <Link href={lp(locale, "/admin")} className="btn btn-glass !px-4 !py-2.5 !text-aqua">
+          Admin
+        </Link>
+      )}
       <Link href={lp(locale, "/dashboard")} className="btn btn-glass !px-4 !py-2.5">
         {labels.library}
       </Link>

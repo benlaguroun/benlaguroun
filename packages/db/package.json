@@ -9,7 +9,8 @@
     "push": "prisma db push",
     "migrate": "prisma migrate dev",
     "seed": "tsx prisma/seed.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "admin": "tsx prisma/make-admin.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.1",

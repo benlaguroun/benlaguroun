@@ -31,6 +31,7 @@ model User {
   orders       Order[]
   entitlements Entitlement[]
   progress     LessonProgress[]
+  client       Client?
 
   @@map("user")
 }
@@ -236,12 +237,89 @@ model Project {
   createdAt DateTime @default(now())
 }
 
+enum LeadStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+// A message sent through the contact form.
 model Lead {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   name      String
   email     String
-  interest  String?  // service slug or free text
+  interest  String?    // service slug or free text
   budget    String?
   message   String
-  createdAt DateTime @default(now())
+  status    LeadStatus @default(NEW)
+  clientId  String?
+  client    Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  createdAt DateTime   @default(now())
+
+  @@index([status, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Admin: clients and payments you record yourself
+// ---------------------------------------------------------------------------
+
+enum ClientStatus {
+  PROSPECT
+  ACTIVE
+  PAST
+}
+
+model Client {
+  id        String       @id @default(cuid())
+  name      String
+  email     String?      @unique
+  phone     String?
+  company   String?
+  status    ClientStatus @default(PROSPECT)
+  source    String?      // e.g. "Contact form", "Referral"
+  notes     String?
+  userId    String?      @unique // linked website account, if they have one
+  user      User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  leads    Lead[]
+  payments Payment[]
+
+  @@index([status])
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CASH
+  CARD
+  ONLINE
+  OTHER
+}
+
+// Money you collect outside the store (service work, invoices, deposits).
+// Store sales live in Order and are shown next to these in the admin.
+model Payment {
+  id          String        @id @default(cuid())
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  amountCents Int
+  currency    String        @default("usd")
+  method      PaymentMethod @default(BANK_TRANSFER)
+  status      PaymentStatus @default(PENDING)
+  description String
+  reference   String?       // invoice number, transfer reference...
+  dueDate     DateTime?
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+
+  @@index([status, createdAt])
+  @@index([clientId])
 }
