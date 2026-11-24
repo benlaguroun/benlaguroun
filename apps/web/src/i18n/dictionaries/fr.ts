@@ -71,9 +71,10 @@ export const fr: Dict = {
     eyebrow: "À propos",
     title: "Ingénieur, bâtisseur et formateur",
     intro: [
-      "Je suis ingénieur full-stack et IA indépendant. Je conçois et déploie des plateformes complètes propulsées par l'IA : systèmes multi-établissements, flux d'agents, couches de données et interfaces que les gens utilisent vraiment.",
+      "Je suis ingénieur full-stack et IA indépendant. Je conçois et déploie des plateformes complètes boostées à l'IA : systèmes multi-tenant, workflows d'agents, couches de données et interfaces que les gens utilisent vraiment.",
       "Je travaille en monorepo, je teste tout sur mon propre réseau et mon propre matériel, et je livre moi-même en production. Pour les clients qui le souhaitent, j'héberge aussi les plateformes sur ma propre infrastructure.",
-      "En parallèle des projets clients, je construis mes propres produits et j'enseigne ce que j'apprends sur la création d'un business en ligne, à travers des formations et des modèles.",
+      "Je suis à l'aise des deux côtés de l'écran : le code qui tourne sur le serveur et l'activité qui se trouve derrière. Je vous demande donc ce que vous voulez accomplir avant de choisir un outil, et je préfère vous dire honnêtement qu'une chose ne vaut pas la peine d'être construite plutôt que de vous vendre ce dont vous n'avez pas besoin.",
+      "En parallèle des projets clients, je crée mes propres produits et j'enseigne ce que j'apprends sur la création d'une activité en ligne, à travers des formations et des modèles.",
     ],
     what: {
       eyebrow: "Ce que je fais",
@@ -82,6 +83,50 @@ export const fr: Dict = {
         { t: "Construire", d: "Plateformes sur mesure, sites web et automatisation IA, du premier croquis à la production." },
         { t: "Héberger", d: "Un fonctionnement sur une infrastructure que je gère, pour un système qui marche sans le casse-tête technique." },
         { t: "Enseigner", d: "Des formations et des modèles qui transforment mon expérience en étapes concrètes à suivre." },
+      ],
+    },
+    build: {
+      eyebrow: "Ce que je construis",
+      title: "Des systèmes qui font un vrai travail",
+      items: [
+        { t: "Plateformes boostées à l'IA", d: "Des assistants, agents et automatisations intégrés au fonctionnement du produit, pas un chatbot posé à côté." },
+        { t: "Systèmes métier multi-tenant", d: "Portails, tableaux de bord et outils d'administration où plusieurs clients ou agences partagent une même plateforme en toute sécurité." },
+        { t: "Sites web et boutiques en ligne", d: "Des sites rapides et multilingues avec comptes, paiements et un espace de contenu que vous gérez vous-même." },
+        { t: "Systèmes connectés sur site", d: "Des logiciels qui dialoguent avec de vrais équipements sur un réseau local, comme des caméras et du matériel de présence ou d'accès." },
+        { t: "Confidentialité dès la conception", d: "Une IA routée pour que les données sensibles restent sous votre contrôle, avec la possibilité de tout faire tourner sur du matériel que je gère." },
+      ],
+    },
+    why: {
+      eyebrow: "Pourquoi travailler avec moi",
+      title: "Pourquoi je suis un choix sûr pour votre projet",
+      body: "Confier la construction de votre plateforme est une grande décision. Voici ce que vous obtenez avec moi.",
+      items: [
+        { t: "Un seul ingénieur maîtrise tout le système", d: "Base de données, API, interface, IA et déploiement viennent d'une seule personne. Pas de passation entre équipes, pas de contexte perdu, et vous savez toujours à qui vous adresser." },
+        { t: "L'IA intégrée dès le premier jour", d: "Je conçois les fonctions d'IA dans le produit dès le départ, pour qu'elles résolvent un vrai problème et continuent de fonctionner après la démo." },
+        { t: "Testé avant que vous le voyiez", d: "Tout tourne d'abord sur mon propre réseau, sur de vrais téléphones, tablettes et appareils, avant d'atteindre un serveur que vous visitez." },
+        { t: "Vos données restent à vous", d: "Confidentialité par défaut. Je peux héberger sur du matériel que je gère et router l'IA pour que les données sensibles n'aient pas à quitter les lieux." },
+        { t: "Un périmètre clair et une vraie livraison", d: "Vous recevez un périmètre écrit, un calendrier fixe et une passation que vous pouvez exploiter seul, sans zone d'ombre dans le système." },
+        { t: "Pensé pour votre public", d: "Je construis en anglais, en français et en arabe, y compris les mises en page de droite à gauche, pour que votre produit parle aux gens que vous servez." },
+      ],
+    },
+    process: {
+      eyebrow: "Notre façon de travailler",
+      title: "Du premier message au lancement",
+      items: [
+        { t: "Échanger", d: "Vous me dites ce que vous construisez et pour qui. Je réponds avec les prochaines étapes et un devis clair." },
+        { t: "Planifier", d: "Nous convenons du périmètre, du calendrier et de ce que « terminé » veut dire avant d'écrire la première ligne de code." },
+        { t: "Construire et tester", d: "Je construis par petites étapes, je teste sur de vrais appareils sur mon réseau et je vous montre l'avancement au fur et à mesure." },
+        { t: "Lancer et accompagner", d: "Je déploie, je livre et je reste disponible. Je peux aussi l'héberger pour vous si vous le préférez." },
+      ],
+    },
+    faq: {
+      eyebrow: "Questions",
+      title: "Avant de me contacter",
+      items: [
+        { t: "Comment démarre un projet ?", d: "Envoyez-moi un message avec ce que vous voulez construire. Je réponds sous deux jours ouvrés avec les prochaines étapes et un devis clair." },
+        { t: "Pouvez-vous héberger la plateforme pour moi ?", d: "Oui. Pour les clients qui le souhaitent, j'héberge les plateformes sur ma propre infrastructure : vous avez un système qui fonctionne sans le travail d'exploitation." },
+        { t: "Dans quelles langues construisez-vous ?", d: "En anglais, en français et en arabe, avec une prise en charge complète de la droite vers la gauche pour l'arabe." },
+        { t: "Ne faites-vous que des projets clients ?", d: "Non. Je crée aussi mes propres produits et j'enseigne à travers des formations business et des modèles prêts à l'emploi." },
       ],
     },
     toolkit: { eyebrow: "Boîte à outils", title: "La stack en laquelle j'ai confiance" },

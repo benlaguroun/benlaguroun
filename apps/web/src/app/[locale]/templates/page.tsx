@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@brand/db";
 import { getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
+import { pageMetadata } from "@/lib/seo";
 import { ProductCard } from "@/components/product-card";
 import { PageIntro } from "@/components/section-heading";
 import { Reveal } from "@/components/reveal";
@@ -12,7 +13,8 @@ type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  return { title: getDict(locale).pages.templates.eyebrow };
+  const t = getDict(locale).pages.templates;
+  return pageMetadata({ locale, path: "/templates", title: t.eyebrow, description: t.body });
 }
 
 export default async function Page({ params }: Props) {

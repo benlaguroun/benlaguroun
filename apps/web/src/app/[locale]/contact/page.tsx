@@ -4,6 +4,7 @@ import { site } from "@/config/site";
 import { localize } from "@/i18n/content";
 import { fill, getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
+import { pageMetadata } from "@/lib/seo";
 import { ContactForm } from "@/components/contact-form";
 import { Reveal } from "@/components/reveal";
 import { PageIntro } from "@/components/section-heading";
@@ -17,7 +18,8 @@ type Props = {
 
 export async function generateMetadata({ params }: Pick<Props, "params">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  return { title: getDict(locale).pages.contact.eyebrow };
+  const t = getDict(locale).pages.contact;
+  return pageMetadata({ locale, path: "/contact", title: t.eyebrow, description: t.body.replace("{email}", site.email) });
 }
 
 export default async function ContactPage({ params, searchParams }: Props) {

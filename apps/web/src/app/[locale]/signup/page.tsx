@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { lp } from "@/i18n/config";
 import { getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
+import { pageMetadata } from "@/lib/seo";
 import { getSession, safeNext } from "@/lib/session";
 import { AuthForm } from "@/components/auth-form";
 import { Reveal } from "@/components/reveal";
@@ -16,7 +17,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Pick<Props, "params">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  return { title: getDict(locale).auth.signupTitle };
+  return pageMetadata({ locale, path: "/signup", title: getDict(locale).auth.signupTitle, noindex: true });
 }
 
 export default async function Page({ params, searchParams }: Props) {

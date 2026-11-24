@@ -5,6 +5,7 @@ import { lp } from "@/i18n/config";
 import { localize } from "@/i18n/content";
 import { getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
+import { pageMetadata } from "@/lib/seo";
 import { Reveal } from "@/components/reveal";
 import { PageIntro } from "@/components/section-heading";
 
@@ -14,7 +15,8 @@ type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  return { title: getDict(locale).pages.portfolio.eyebrow };
+  const t = getDict(locale).pages.portfolio;
+  return pageMetadata({ locale, path: "/portfolio", title: t.eyebrow, description: t.body });
 }
 
 export default async function PortfolioPage({ params }: Props) {

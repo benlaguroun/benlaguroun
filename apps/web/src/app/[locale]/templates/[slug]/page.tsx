@@ -6,6 +6,8 @@ import { lp } from "@/i18n/config";
 import { localize } from "@/i18n/content";
 import { getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
+import { JsonLd } from "@/components/json-ld";
+import { breadcrumbJsonLd, pageMetadata, productJsonLd } from "@/lib/seo";
 import { paragraphs } from "@/lib/format";
 import { getSession } from "@/lib/session";
 import { userOwns } from "@/lib/access";
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const raw = await getTemplate(slug);
   if (!raw) return {};
   const p = localize(raw, locale);
-  return { title: p.name, description: p.tagline };
+  return pageMetadata({ locale, path: `/templates/${slug}`, title: p.name, description: p.tagline, type: "article" });
 }
 
 export default async function TemplatePage({ params }: Props) {
@@ -44,6 +46,15 @@ export default async function TemplatePage({ params }: Props) {
 
   return (
     <div className="wrap grid gap-12 py-14 lg:grid-cols-[1.6fr_1fr]">
+      <JsonLd
+        data={[
+          productJsonLd("Product", product, locale, `/templates/${slug}`),
+          breadcrumbJsonLd(locale, [
+            { name: t.pages.templates.eyebrow, path: "/templates" },
+            { name: product.name, path: `/templates/${slug}` },
+          ]),
+        ]}
+      />
       <Reveal>
         <article>
           <Link href={lp(locale, "/templates")} className="inline-flex items-center gap-2 text-sm text-mute hover:text-ink">

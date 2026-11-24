@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
+import { projects, sampleProjectSlugs, solutions } from "./agency-content";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
@@ -406,87 +407,21 @@ async function main() {
     }
   }
 
-  // ---- Portfolio --------------------------------------------------------
-  const projects = [
-    {
-      slug: "school-management-platform",
-      title: "School Management Platform",
-      client: "Private school (sample)",
-      summary: "Multi-role portal with attendance, parent access and an AI layer.",
-      body:
-        "A multi-tenant platform for a school: automated attendance, a parent portal, a social feed and AI-assisted reporting.\n\nReplace this sample text with your real case study: the problem, what you built, and the result.",
-      tags: ["Next.js", "Turborepo", "PostgreSQL", "AI"],
-      featured: true,
-      position: 1,
-      translations: {
-        fr: {
-          title: "Plateforme de gestion scolaire",
-          client: "École privée (exemple)",
-          summary: "Portail multi-rôles avec présence, accès parents et couche IA.",
-          body:
-            "Une plateforme multi-établissements pour une école : présence automatisée, portail parents, fil social et reporting assisté par IA.\n\nRemplacez ce texte d'exemple par votre véritable étude de cas : le problème, ce que vous avez construit et le résultat.",
-        },
-        ar: {
-          title: "منصّة إدارة مدرسية",
-          client: "مدرسة خاصة (مثال)",
-          summary: "بوابة متعددة الأدوار مع الحضور ووصول أولياء الأمور وطبقة ذكاء اصطناعي.",
-          body:
-            "منصّة متعددة المدارس: حضور آلي وبوابة لأولياء الأمور وخلاصة اجتماعية وتقارير بمساعدة الذكاء الاصطناعي.\n\nاستبدل هذا النص التجريبي بدراسة الحالة الحقيقية: المشكلة وما بنيته والنتيجة.",
-        },
-      },
-    },
-    {
-      slug: "hospitality-suite",
-      title: "Hospitality Management Suite",
-      client: "Hospitality group (sample)",
-      summary: "Bookings, staff and guest management for multi-property operators.",
-      body: "Replace this sample text with your real case study.",
-      tags: ["Multi-tenant", "TypeScript", "Prisma"],
-      featured: true,
-      position: 2,
-      translations: {
-        fr: {
-          title: "Suite de gestion hôtelière",
-          client: "Groupe hôtelier (exemple)",
-          summary: "Réservations, personnel et clients pour les exploitants multi-établissements.",
-          body: "Remplacez ce texte d'exemple par votre véritable étude de cas.",
-        },
-        ar: {
-          title: "نظام إدارة الضيافة",
-          client: "مجموعة ضيافة (مثال)",
-          summary: "حجوزات وموظفون وضيوف للمشغّلين متعددي المنشآت.",
-          body: "استبدل هذا النص التجريبي بدراسة الحالة الحقيقية.",
-        },
-      },
-    },
-    {
-      slug: "print-on-demand-store",
-      title: "Character-Driven Print on Demand Store",
-      client: "Own brand (sample)",
-      summary: "A branded storefront with automated fulfilment.",
-      body: "Replace this sample text with your real case study.",
-      tags: ["E-commerce", "Stripe", "Next.js"],
-      featured: false,
-      position: 3,
-      translations: {
-        fr: {
-          title: "Boutique d'impression à la demande à personnages",
-          client: "Marque propre (exemple)",
-          summary: "Une boutique de marque avec exécution automatisée.",
-          body: "Remplacez ce texte d'exemple par votre véritable étude de cas.",
-        },
-        ar: {
-          title: "متجر طباعة عند الطلب بشخصيات",
-          client: "علامة خاصة (مثال)",
-          summary: "متجر بهوية خاصة مع تنفيذ آلي للطلبات.",
-          body: "استبدل هذا النص التجريبي بدراسة الحالة الحقيقية.",
-        },
-      },
-    },
-  ];
+  // ---- Solutions clients ask for -----------------------------------------
+  for (const [i, sol] of solutions.entries()) {
+    await prisma.product.upsert({
+      where: { slug: sol.slug },
+      update: { translations: sol.translations },
+      create: { ...sol, type: "SERVICE", priceCents: null, featured: i < 2 },
+    });
+  }
+
+  // ---- Portfolio (real projects) -----------------------------------------
+  await prisma.project.deleteMany({ where: { slug: { in: sampleProjectSlugs } } });
   for (const p of projects) {
     await prisma.project.upsert({
       where: { slug: p.slug },
+      // Re-running only refreshes translations, so edits you make stay.
       update: { translations: p.translations },
       create: p,
     });

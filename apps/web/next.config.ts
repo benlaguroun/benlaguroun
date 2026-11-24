@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   // client), so Next must compile it.
   transpilePackages: ["@brand/db"],
   serverExternalPackages: ["pg"],
+  // Don't advertise the framework in response headers.
+  poweredByHeader: false,
+  images: { formats: ["image/avif", "image/webp"] },
 };
 
 export default nextConfig;

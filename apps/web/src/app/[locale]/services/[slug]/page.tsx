@@ -6,6 +6,8 @@ import { lp } from "@/i18n/config";
 import { localize } from "@/i18n/content";
 import { getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
+import { JsonLd } from "@/components/json-ld";
+import { breadcrumbJsonLd, pageMetadata, productJsonLd } from "@/lib/seo";
 import { formatPrice, paragraphs } from "@/lib/format";
 import { ArrowBack, Check } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
@@ -25,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const raw = await getService(slug);
   if (!raw) return {};
   const p = localize(raw, locale);
-  return { title: p.name, description: p.tagline };
+  return pageMetadata({ locale, path: `/services/${slug}`, title: p.name, description: p.tagline, type: "article" });
 }
 
 export default async function ServicePage({ params }: Props) {
@@ -38,6 +40,15 @@ export default async function ServicePage({ params }: Props) {
 
   return (
     <div className="wrap grid gap-12 py-14 lg:grid-cols-[1.6fr_1fr]">
+      <JsonLd
+        data={[
+          productJsonLd("Service", service, locale, `/services/${slug}`),
+          breadcrumbJsonLd(locale, [
+            { name: t.pages.services.eyebrow, path: "/services" },
+            { name: service.name, path: `/services/${slug}` },
+          ]),
+        ]}
+      />
       <Reveal>
         <article>
           <Link href={lp(locale, "/services")} className="inline-flex items-center gap-2 text-sm text-mute hover:text-ink">

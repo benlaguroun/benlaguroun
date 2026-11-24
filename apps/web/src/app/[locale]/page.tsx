@@ -6,6 +6,9 @@ import { localize } from "@/i18n/content";
 import { fill, getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
 import { Arrow } from "@/components/icons";
+import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, siteJsonLd } from "@/lib/seo";
+import type { Metadata } from "next";
 import { NetworkDiagram } from "@/components/network-diagram";
 import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
@@ -16,6 +19,13 @@ import { SocialIcons } from "@/components/social-links";
 import { TypedRoles } from "@/components/typed-roles";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const t = getDict(locale);
+  const title = `${site.name} | ${t.meta.title}`;
+  return { ...pageMetadata({ locale, title, description: t.meta.description }), title: { absolute: title } };
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const locale = await resolveLocale(params);
@@ -32,6 +42,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
+      <JsonLd data={siteJsonLd(locale)} />
       {/* ───────────── Hero ───────────── */}
       <section className="relative">
         <div className="wrap grid gap-14 pb-14 pt-12 sm:pt-20 lg:grid-cols-2 lg:items-center lg:gap-10">
@@ -52,7 +63,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <span className="live-dot" /> {t.hero.badge}
               </span>
               <p className="display mt-6 text-lg font-medium text-ink/90">{t.hero.hello}</p>
-              <h1 className="display mt-1 text-5xl font-semibold leading-tight sm:text-6xl">{site.name}</h1>
+              <h1 className="display mt-1 text-5xl font-semibold leading-tight sm:text-6xl">{site.name}
+                <span className="sr-only"> | {t.meta.title}</span>
+              </h1>
               <p className="display mt-2 flex flex-wrap items-center gap-x-2 text-xl font-medium sm:text-2xl">
                 <span>{t.hero.iam}</span>
                 <TypedRoles roles={t.hero.roles} className="!text-xl font-semibold sm:!text-2xl" />

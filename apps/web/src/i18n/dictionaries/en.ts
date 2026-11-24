@@ -71,6 +71,7 @@ export const en = {
     intro: [
       "I'm an independent full-stack and AI engineer. I build and deploy complete AI-powered platforms: multi-tenant systems, agent workflows, data layers and the interfaces people actually use.",
       "I work in a monorepo, test everything on my own network and hardware, and ship to production myself. For clients who want it, I also host the platforms on my own infrastructure.",
+      "I'm comfortable on both sides of the screen: the code that runs on the server and the business that sits behind it. So I ask what you're trying to achieve before I pick a tool, and I'd rather tell you honestly that something isn't worth building than sell you something you don't need.",
       "Alongside client work I build my own products and teach what I learn about building a business online, through courses and templates.",
     ],
     what: {
@@ -80,6 +81,50 @@ export const en = {
         { t: "Build", d: "Custom platforms, websites and AI automation, from first sketch to production." },
         { t: "Host", d: "Run on infrastructure I manage, so you get a working system without the ops headache." },
         { t: "Teach", d: "Courses and templates that turn what I've learned into steps you can follow." },
+      ],
+    },
+    build: {
+      eyebrow: "What I build",
+      title: "Systems that do real work",
+      items: [
+        { t: "AI-powered platforms", d: "Assistants, agents and automations that are part of the product's workflow, not a chatbot stuck on the side." },
+        { t: "Multi-tenant business systems", d: "Portals, dashboards and admin tools where many customers or branches share one platform safely." },
+        { t: "Websites and online stores", d: "Fast, multilingual sites with accounts, payments and a content area you can manage yourself." },
+        { t: "Connected, on-site systems", d: "Software that talks to real devices on a local network, such as cameras and attendance or access hardware." },
+        { t: "Private by design", d: "AI routed so sensitive data stays under your control, with the option to run it all on hardware I manage." },
+      ],
+    },
+    why: {
+      eyebrow: "Why work with me",
+      title: "Why I'm a safe choice for your project",
+      body: "Hiring someone to build your platform is a big decision. Here is what you get when it's me.",
+      items: [
+        { t: "One engineer owns the whole system", d: "Database, API, interface, AI and deployment come from one person. No hand-offs between teams, no lost context, and you always know who to ask." },
+        { t: "AI built in from day one", d: "I design AI features into the product from the start, so they solve a real problem and keep working after the demo." },
+        { t: "Tested before you see it", d: "Everything runs on my own network, on real phones, tablets and devices, before it reaches a server you visit." },
+        { t: "Your data stays yours", d: "Private by default. I can host on hardware I manage, and I route AI so sensitive data doesn't have to leave the building." },
+        { t: "Clear scope and a real handover", d: "You get a written scope, a fixed timeline and a handover you can run yourself, with no mystery left in the system." },
+        { t: "Built for your audience", d: "I build in English, French and Arabic, including right-to-left layouts, so your product speaks to the people you serve." },
+      ],
+    },
+    process: {
+      eyebrow: "How we work",
+      title: "From first message to launch",
+      items: [
+        { t: "Talk", d: "You tell me what you're building and who it's for. I reply with next steps and a clear quote." },
+        { t: "Plan", d: "We agree the scope, the timeline and what 'done' looks like before any code is written." },
+        { t: "Build and test", d: "I build in short steps, test on real devices on my network, and show you progress as we go." },
+        { t: "Launch and support", d: "I deploy it, hand it over, and stay available. I can also host it for you if you prefer." },
+      ],
+    },
+    faq: {
+      eyebrow: "Questions",
+      title: "Before you get in touch",
+      items: [
+        { t: "How does a project start?", d: "Send a message with what you want to build. I reply within two working days with next steps and a clear quote." },
+        { t: "Can you host the platform for me?", d: "Yes. For clients who want it, I host platforms on my own infrastructure, so you get a working system without the ops work." },
+        { t: "Which languages do you build in?", d: "English, French and Arabic, including full right-to-left support for Arabic." },
+        { t: "Do you only do client work?", d: "No. I also build my own products and teach through business courses and ready-made templates." },
       ],
     },
     toolkit: { eyebrow: "Toolkit", title: "The stack I trust" },

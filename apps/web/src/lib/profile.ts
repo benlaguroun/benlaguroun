@@ -13,3 +13,16 @@ export function getProfilePhoto(): string | null {
   }
   return null;
 }
+
+const aboutCandidates = ["about.jpg", "about.jpeg", "about.png", "about.webp"];
+
+/**
+ * The second portrait used on the About page: apps/web/public/about.(jpg|png|webp).
+ * Falls back to the main profile photo until you add one.
+ */
+export function getAboutPhoto(): string | null {
+  for (const file of aboutCandidates) {
+    if (existsSync(path.join(process.cwd(), "public", file))) return `/${file}`;
+  }
+  return getProfilePhoto();
+}

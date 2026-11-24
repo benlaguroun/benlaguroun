@@ -6,6 +6,8 @@ import { lp } from "@/i18n/config";
 import { localize } from "@/i18n/content";
 import { getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
+import { JsonLd } from "@/components/json-ld";
+import { absoluteUrl, breadcrumbJsonLd, pageMetadata, pathFor } from "@/lib/seo";
 import { paragraphs } from "@/lib/format";
 import { ArrowBack } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
@@ -20,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const raw = await prisma.project.findUnique({ where: { slug } });
   if (!raw) return {};
   const p = localize(raw, locale);
-  return { title: p.title, description: p.summary };
+  return pageMetadata({ locale, path: `/portfolio/${slug}`, title: p.title, description: p.summary, type: "article" });
 }
 
 export default async function ProjectPage({ params }: Props) {
@@ -33,6 +35,24 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <article className="wrap max-w-3xl py-14">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            name: project.title,
+            description: project.summary,
+            url: absoluteUrl(pathFor(locale, `/portfolio/${slug}`)),
+            inLanguage: locale,
+            keywords: project.tags.join(", "),
+            ...(project.imageUrl ? { image: project.imageUrl } : {}),
+          },
+          breadcrumbJsonLd(locale, [
+            { name: t.pages.portfolio.eyebrow, path: "/portfolio" },
+            { name: project.title, path: `/portfolio/${slug}` },
+          ]),
+        ]}
+      />
       <Reveal>
         <Link href={lp(locale, "/portfolio")} className="inline-flex items-center gap-2 text-sm text-mute hover:text-ink">
           <ArrowBack /> {t.project.back}

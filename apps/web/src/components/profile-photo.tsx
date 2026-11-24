@@ -1,13 +1,22 @@
 import Image from "next/image";
 import { site } from "@/config/site";
-import { getProfilePhoto } from "@/lib/profile";
+import { getAboutPhoto, getProfilePhoto } from "@/lib/profile";
 
 /**
  * Shows apps/web/public/profile.(jpg|png|webp). Until that file exists it
  * shows a gradient monogram so the layout never looks broken.
  */
-export function ProfilePhoto({ alt, priority = false }: { alt: string; priority?: boolean }) {
-  const src = getProfilePhoto();
+export function ProfilePhoto({
+  alt,
+  priority = false,
+  variant = "profile",
+}: {
+  alt: string;
+  priority?: boolean;
+  /** "about" uses public/about.* when it exists, so the two pages show different photos. */
+  variant?: "profile" | "about";
+}) {
+  const src = variant === "about" ? getAboutPhoto() : getProfilePhoto();
 
   if (src) {
     return (

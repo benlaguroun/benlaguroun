@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cairo, Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { notFound } from "next/navigation";
 import { site } from "@/config/site";
@@ -22,18 +22,24 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+export const viewport: Viewport = { themeColor: "#05060b", colorScheme: "dark" };
+
+// Site-wide defaults. Each page adds its own title, canonical link and
+// language alternates with pageMetadata() from lib/seo.ts.
 export async function generateMetadata({ params }: Pick<Props, "params">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDict(locale);
   return {
     metadataBase: new URL(siteUrl),
+    applicationName: site.name,
     title: { default: `${site.name} | ${t.meta.title}`, template: `%s | ${site.name}` },
     description: t.meta.description,
-    alternates: {
-      languages: Object.fromEntries(locales.map((l) => [l, `/${l}`])),
-    },
-    openGraph: { title: site.name, description: t.meta.description, type: "website", locale },
+    authors: [{ name: site.name, url: siteUrl }],
+    creator: site.name,
+    formatDetection: { telephone: false },
+    // Paste the code from Google Search Console into GOOGLE_SITE_VERIFICATION.
+    verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
   };
 }
 
