@@ -21,6 +21,11 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
+  /* Decorative glows and blobs may stick out past the screen. Clipping them on
+     <html> too stops phones from widening the page and pushing the header's
+     buttons (like the menu) off-screen. "clip", unlike "hidden", keeps the
+     sticky header working. */
+  overflow-x: clip;
 }
 
 body {
@@ -28,7 +33,7 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 ::selection {
@@ -171,10 +176,20 @@ body {
 }
 
 .glass-bar {
+  isolation: isolate;
+  border-bottom: 1px solid rgb(255 255 255 / 0.07);
+}
+/* The blur lives on a layer behind the bar. Putting backdrop-filter on the bar
+   itself would make it the containing block for the fixed mobile menu, which
+   squashed the menu and its tap-outside layer into the header's height. */
+.glass-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: rgb(8 9 18 / 0.55);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   backdrop-filter: blur(20px) saturate(160%);
-  border-bottom: 1px solid rgb(255 255 255 / 0.07);
 }
 
 .spot {

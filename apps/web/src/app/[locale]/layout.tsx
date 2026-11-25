@@ -51,6 +51,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
+      data-scroll-behavior="smooth"
       dir={localeMeta[locale].dir}
       className={`${grotesk.variable} ${inter.variable} ${cairo.variable} ${mono.variable}`}
     >
@@ -59,7 +60,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <Aurora />
         <CursorGlow />
         <SiteHeader locale={locale} />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 overflow-x-clip">{children}</main>
         <SiteFooter locale={locale} />
       </body>
     </html>

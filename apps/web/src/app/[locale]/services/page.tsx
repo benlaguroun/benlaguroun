@@ -7,7 +7,8 @@ import { ProductCard } from "@/components/product-card";
 import { PageIntro } from "@/components/section-heading";
 import { Reveal } from "@/components/reveal";
 
-export const dynamic = "force-dynamic";
+// Built once, then reused for 10 minutes. Saving anything in the admin refreshes it straight away.
+export const revalidate = 600;
 
 type Props = { params: Promise<{ locale: string }> };
 

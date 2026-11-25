@@ -15,19 +15,19 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   return (
     <header className="glass-bar sticky top-0 z-40">
       <div className="wrap relative flex h-[4.25rem] items-center justify-between gap-3">
-        <Link href={lp(locale)} className="group flex shrink-0 items-center gap-2.5" aria-label={site.name}>
+        <Link href={lp(locale)} className="group flex min-w-0 items-center gap-2.5" aria-label={site.name}>
           <span
             aria-hidden
             className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-iris to-aqua font-mono text-sm font-bold text-void transition group-hover:rotate-6"
           >
             {site.name.charAt(0)}
           </span>
-          <span className="display hidden text-lg font-semibold tracking-tight min-[400px]:block">{site.name}</span>
+          <span className="display hidden truncate text-lg font-semibold tracking-tight min-[400px]:block">{site.name}</span>
         </Link>
 
         <NavLinks items={items} label={t.nav.menu} />
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <LangSwitcher current={locale} label={t.nav.language} />
           {/* On phones the account buttons live inside the menu */}
           <div className="hidden lg:block">

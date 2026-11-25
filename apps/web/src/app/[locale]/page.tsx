@@ -19,7 +19,8 @@ import { ProfilePhoto } from "@/components/profile-photo";
 import { SocialIcons } from "@/components/social-links";
 import { TypedRoles } from "@/components/typed-roles";
 
-export const dynamic = "force-dynamic";
+// Built once, then reused for 10 minutes. Saving anything in the admin refreshes it straight away.
+export const revalidate = 600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const locale = await resolveLocale(params);
