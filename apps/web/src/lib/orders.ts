@@ -48,8 +48,7 @@ export async function refundOrder(orderId: string) {
 
 /**
  * Sends the money back through the provider (Stripe or PayPal), then revokes
- * access. Other providers (Lemon Squeezy) have no refund call here: refund in
- * their dashboard, and this only revokes access.
+ * access. An order from any other provider only has its access revoked.
  */
 export async function refundOrderWithProvider(orderId: string) {
   const order = await prisma.order.findUnique({ where: { id: orderId } });

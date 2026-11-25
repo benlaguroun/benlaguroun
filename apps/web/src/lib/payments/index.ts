@@ -1,4 +1,3 @@
-import { lemonSqueezyProvider } from "./lemonsqueezy";
 import { paypalProvider, paypalSupportsCurrency } from "./paypal";
 import { stripeProvider } from "./stripe";
 import type { PaymentProvider, ProviderName } from "./types";
@@ -6,7 +5,6 @@ import type { PaymentProvider, ProviderName } from "./types";
 const providers: Record<ProviderName, PaymentProvider> = {
   stripe: stripeProvider,
   paypal: paypalProvider,
-  lemonsqueezy: lemonSqueezyProvider,
 };
 
 // A method is offered at checkout only when its keys are set, so you can switch
@@ -14,7 +12,6 @@ const providers: Record<ProviderName, PaymentProvider> = {
 const configured: Record<ProviderName, () => boolean> = {
   stripe: () => !!process.env.STRIPE_SECRET_KEY,
   paypal: () => !!(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET),
-  lemonsqueezy: () => !!(process.env.LEMONSQUEEZY_API_KEY && process.env.LEMONSQUEEZY_STORE_ID),
 };
 
 /**

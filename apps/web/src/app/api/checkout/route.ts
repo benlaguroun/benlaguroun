@@ -57,7 +57,6 @@ export async function POST(req: Request) {
         priceCents: product.priceCents,
         currency: product.currency,
         stripePriceId: product.stripePriceId,
-        lemonVariantId: product.lemonVariantId,
       },
       customer: { email: session.user.email, name: session.user.name },
       successUrl: `${site.url}${lp(locale, "/checkout/success")}?order=${order.id}`,

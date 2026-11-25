@@ -117,7 +117,7 @@ model Product {
 
   // Optional per-provider IDs. If empty, checkout creates the price inline.
   stripePriceId   String?
-  lemonVariantId  String?
+  lemonVariantId  String?  // no longer used (Lemon Squeezy is shutting down); safe to drop later
 
   course       Course?
   orders       Order[]
@@ -193,7 +193,7 @@ model Order {
   product     Product     @relation(fields: [productId], references: [id])
   amountCents Int
   currency    String
-  provider    String      // "stripe" | "lemonsqueezy"
+  provider    String      // "stripe" | "paypal"
   providerRef String?     @unique // checkout session / order id from the provider
   status      OrderStatus @default(PENDING)
   locale      String      @default("en") // language the buyer used, for their receipt

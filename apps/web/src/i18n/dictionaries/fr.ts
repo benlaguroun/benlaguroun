@@ -361,8 +361,6 @@ export const fr: Dict = {
     stripeBody: "Paiement par carte sécurisé via Stripe.",
     paypalTitle: "PayPal",
     paypalBody: "Payez avec votre compte PayPal, ou par carte via PayPal.",
-    lemonTitle: "Carte",
-    lemonBody: "Paiement par carte sécurisé, taxes gérées pour vous.",
     pay: "Payer {price}",
     processing: "Ouverture du paiement sécurisé…",
     secure: "Vous terminez sur une page de paiement sécurisée. Vos données de carte ne passent jamais par ce site.",

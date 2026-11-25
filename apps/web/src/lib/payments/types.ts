@@ -1,4 +1,4 @@
-export type ProviderName = "stripe" | "paypal" | "lemonsqueezy";
+export type ProviderName = "stripe" | "paypal";
 
 export type CheckoutInput = {
   orderId: string;
@@ -9,7 +9,6 @@ export type CheckoutInput = {
     priceCents: number;
     currency: string;
     stripePriceId?: string | null;
-    lemonVariantId?: string | null;
   };
   customer: { email: string; name: string };
   /** Where the provider sends the buyer after paying. */

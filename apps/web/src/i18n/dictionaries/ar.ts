@@ -360,8 +360,6 @@ export const ar: Dict = {
     stripeBody: "دفع آمن بالبطاقة عبر Stripe.",
     paypalTitle: "PayPal",
     paypalBody: "ادفع بحساب PayPal الخاص بك، أو ببطاقة عبر PayPal.",
-    lemonTitle: "بطاقة",
-    lemonBody: "دفع آمن بالبطاقة مع احتساب الضرائب نيابة عنك.",
     pay: "ادفع {price}",
     processing: "جارٍ فتح صفحة الدفع الآمنة…",
     secure: "تُكمل العملية في صفحة دفع آمنة. لا تمر بيانات بطاقتك عبر هذا الموقع أبدًا.",

@@ -48,7 +48,6 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
   const labels: Record<string, Method> = {
     stripe: { name: "stripe", title: c.stripeTitle, body: c.stripeBody },
     paypal: { name: "paypal", title: c.paypalTitle, body: c.paypalBody },
-    lemonsqueezy: { name: "lemonsqueezy", title: c.lemonTitle, body: c.lemonBody },
   };
   const methods = availableProviders(raw.currency).map((p) => labels[p.name]!);
   const unverified = needsVerification(session.user as { emailVerified?: boolean; role?: string });

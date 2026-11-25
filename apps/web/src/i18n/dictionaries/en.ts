@@ -359,8 +359,6 @@ export const en = {
     stripeBody: "Secure card payment through Stripe.",
     paypalTitle: "PayPal",
     paypalBody: "Pay with your PayPal account, or with a card through PayPal.",
-    lemonTitle: "Card",
-    lemonBody: "Secure card payment, taxes handled for you.",
     pay: "Pay {price}",
     processing: "Opening secure payment…",
     secure: "You finish on a secure payment page. Your card details never touch this site.",

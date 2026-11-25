@@ -12,6 +12,7 @@ import { getStripe } from "@/lib/payments/stripe";
 import { requireSession } from "@/lib/session";
 import { Check } from "@/components/icons";
 import { reportError } from "@/lib/errors";
+import { AutoRefresh } from "@/components/auto-refresh";
 
 export const metadata: Metadata = { title: "Thank you", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -56,6 +57,7 @@ export default async function CheckoutSuccess({ params, searchParams }: Props) {
 
   return (
     <div className="wrap max-w-xl py-20">
+      {order?.status === "PENDING" && <AutoRefresh />}
       <div className="glass p-10 text-center">
         {paid && (
           <span className="mx-auto mb-6 grid h-14 w-14 place-items-center rounded-full bg-aqua/15 text-aqua">
