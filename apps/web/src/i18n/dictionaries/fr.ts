@@ -2,9 +2,9 @@ import type { Dict } from "./en";
 
 export const fr: Dict = {
   meta: {
-    title: "Ingénieur full-stack & IA",
+    title: "Plateformes sur mesure pour écoles, cliniques et hôtels",
     description:
-      "Plateformes sur mesure propulsées par l'IA, modèles prêts à l'emploi et formations business pratiques, par un ingénieur full-stack et IA indépendant.",
+      "Plateformes de gestion sur mesure avec IA pour écoles, cliniques et hôtels, conçues, hébergées et suivies en arabe, en français et en anglais. Avec des modèles prêts à l'emploi et des formations business pratiques.",
   },
   nav: {
     services: "Services",
@@ -23,11 +23,15 @@ export const fr: Dict = {
   },
   hero: {
     badge: "Disponible pour de nouveaux projets",
+    intro: "{name} · Ingénieur full-stack et IA",
+    headline: "Je construis le logiciel qui fait tourner votre école, votre clinique ou votre hôtel, en arabe, en français et en anglais.",
+    ctaProject: "Parlez-moi de votre projet",
+    ctaWork: "Voir mes réalisations",
     eyebrow: "Ingénieur full-stack · Ingénieur IA",
     titleA: "Je conçois et livre",
     titleB: "des plateformes boostées à l'IA",
     titleC: "testées sur mon propre réseau.",
-    sub: "Ingénieur full-stack et IA. Je transforme les idées en logiciels de production, des agents et des données jusqu'aux interfaces soignées, et j'enseigne le côté business.",
+    sub: "Présences, réservations, dossiers, paiements et assistants IA dans une seule plateforme adaptée à votre façon de travailler. Je la conçois, la développe, l'héberge et la maintiens : vous n'avez aucun serveur à gérer.",
     roles: ["Ingénieur full-stack", "Ingénieur IA", "Créateur de plateformes", "Formateur"],
     ctaPrimary: "Travailler avec moi",
     ctaSecondary: "Découvrir les formations",

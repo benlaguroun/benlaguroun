@@ -1,8 +1,8 @@
 export const en = {
   meta: {
-    title: "Full-stack & AI engineer",
+    title: "Custom platforms for schools, clinics and hotels",
     description:
-      "Custom AI-powered platforms, ready-made templates and practical business courses from an independent full-stack and AI engineer.",
+      "Custom management platforms with AI for schools, clinics and hotels, built, hosted and supported in Arabic, French and English. Plus ready-made templates and practical business courses.",
   },
   nav: {
     services: "Services",
@@ -21,11 +21,16 @@ export const en = {
   },
   hero: {
     badge: "Available for new projects",
+    // The homepage headline: one sentence saying who you help and how. Change these first when your focus changes.
+    intro: "{name} · Full-stack & AI engineer",
+    headline: "I build the software that runs your school, clinic or hotel, in Arabic, French and English.",
+    ctaProject: "Tell me about your project",
+    ctaWork: "See my work",
     eyebrow: "Full-stack engineer · AI engineer",
     titleA: "I design & ship",
     titleB: "AI-powered platforms",
     titleC: "tested on my own network.",
-    sub: "Full-stack and AI engineer. I turn ideas into production software, from agents and data to polished interfaces, and I teach the business side of doing it.",
+    sub: "Attendance, bookings, records, payments and AI assistants in one platform that fits how you really work. I design it, build it, host it and look after it, so you never have to run a server.",
     roles: ["Full-stack engineer", "AI engineer", "Platform builder", "Course creator"],
     ctaPrimary: "Work with me",
     ctaSecondary: "Explore courses",

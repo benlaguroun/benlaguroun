@@ -118,7 +118,7 @@ export const defs: Def[] = [
   { key: "llc-filled", phase: "p0", kind: "setup", title: "Fill in the company block in config/site.ts", after: ["llc-started"], why: "Once the company exists, the legal pages, footer and emails switch to its name by themselves.", auto: () => ({ done: hasCompany, detail: hasCompany ? site.company.legalName : undefined }) },
 
   // Phase 1
-  { key: "packages", phase: "p1", kind: "business", title: "Write the service packages and the care plan", why: "Fixed scope, price, timeline and deposit for each. Packages sell better than hourly work." },
+  { key: "packages", phase: "p1", kind: "business", title: "Write the service packages and the care plan", href: "/admin/products", why: "Fixed scope, price, timeline and deposit for each. Packages sell better than hourly work. Written in SERVICES.md; load them with npm run db:services, then adjust prices in Products." },
   { key: "booking", phase: "p1", kind: "code", title: "Add a booking link (Calendly or Cal.com) to services and contact", why: "Many serious clients prefer picking a time over filling a form." },
   {
     key: "portfolio", phase: "p1", kind: "business", title: "Show 3 real projects with results", href: "/admin/projects",

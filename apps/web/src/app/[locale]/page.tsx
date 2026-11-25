@@ -17,7 +17,6 @@ import { TechMarquee } from "@/components/tech-marquee";
 import { Testimonials } from "@/components/testimonials";
 import { ProfilePhoto } from "@/components/profile-photo";
 import { SocialIcons } from "@/components/social-links";
-import { TypedRoles } from "@/components/typed-roles";
 
 // Built once, then reused for 10 minutes. Saving anything in the admin refreshes it straight away.
 export const revalidate = 600;
@@ -65,14 +64,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <span className="glass inline-flex items-center gap-2.5 !rounded-full px-4 py-1.5 text-xs font-medium text-mute">
                 <span className="live-dot" /> {t.hero.badge}
               </span>
-              <p className="display mt-6 text-lg font-medium text-ink/90">{t.hero.hello}</p>
-              <h1 className="display mt-1 text-5xl font-semibold leading-tight sm:text-6xl">{site.name}
-                <span className="sr-only"> | {t.meta.title}</span>
-              </h1>
-              <p className="display mt-2 flex flex-wrap items-center gap-x-2 text-xl font-medium sm:text-2xl">
-                <span>{t.hero.iam}</span>
-                <TypedRoles roles={t.hero.roles} className="!text-xl font-semibold sm:!text-2xl" />
-              </p>
+              <p className="display mt-6 text-sm font-medium text-aqua sm:text-base">{fill(t.hero.intro, { name: site.name })}</p>
+              <h1 className="display mt-3 text-4xl font-semibold leading-[1.15] sm:text-5xl">{t.hero.headline}</h1>
             </Reveal>
 
             <Reveal delay={160}>
@@ -84,11 +77,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
             <Reveal delay={240}>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href={lp(locale, "/services")} className="btn btn-primary">
-                  {t.hero.ctaHire} <Arrow />
+                <Link href={lp(locale, "/contact")} className="btn btn-primary">
+                  {t.hero.ctaProject} <Arrow />
                 </Link>
-                <Link href={lp(locale, "/contact")} className="btn btn-glass">
-                  {t.hero.ctaContact}
+                <Link href={lp(locale, "/portfolio")} className="btn btn-glass">
+                  {t.hero.ctaWork}
                 </Link>
               </div>
             </Reveal>
