@@ -29,7 +29,9 @@ export const viewport: Viewport = { themeColor: "#05060b", colorScheme: "dark" }
 // language alternates with pageMetadata() from lib/seo.ts.
 export async function generateMetadata({ params }: Pick<Props, "params">): Promise<Metadata> {
   const { locale } = await params;
-  if (!isLocale(locale)) return {};
+  // Requests like /favicon.ico or bot probes are not a language page. They still need the
+  // site address so image links resolve to your domain instead of falling back to localhost.
+  if (!isLocale(locale)) return { metadataBase: new URL(siteUrl) };
   const t = getDict(locale);
   return {
     metadataBase: new URL(siteUrl),

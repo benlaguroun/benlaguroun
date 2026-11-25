@@ -10,3 +10,4 @@ next-env.d.ts
 
 # Uploaded images (set UPLOAD_DIR to keep them somewhere else)
 uploads
+.env.production.local

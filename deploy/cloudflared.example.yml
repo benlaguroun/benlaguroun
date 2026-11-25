@@ -1,0 +1,20 @@
+# Cloudflare Tunnel settings for benlaguroun.com. Save as ~/.cloudflared/config.yml
+# after creating the tunnel, and replace TUNNEL-ID with the id that
+# `cloudflared tunnel create brand` prints (the credentials file has the same name).
+#
+#   brew install cloudflared
+#   cloudflared tunnel login
+#   cloudflared tunnel create brand
+#   cloudflared tunnel route dns brand benlaguroun.com
+#   cloudflared tunnel route dns brand www.benlaguroun.com
+#   sudo cloudflared service install     (runs the tunnel at boot)
+
+tunnel: brand
+credentials-file: /Users/mohamedbenlaguroun/.cloudflared/TUNNEL-ID.json
+
+ingress:
+  - hostname: benlaguroun.com
+    service: http://127.0.0.1:3000
+  - hostname: www.benlaguroun.com
+    service: http://127.0.0.1:3000
+  - service: http_status:404

@@ -84,8 +84,24 @@ export const defs: Def[] = [
   },
   {
     key: "domain", phase: "p0", kind: "setup", title: "Real domain set in NEXT_PUBLIC_APP_URL and BETTER_AUTH_URL",
-    why: "Links in emails and the sitemap need your real address, not localhost.",
-    auto: () => ({ done: !isLocal(env("NEXT_PUBLIC_APP_URL")) && !isLocal(env("BETTER_AUTH_URL")), detail: env("NEXT_PUBLIC_APP_URL") || "not set" }),
+    why: "Links in emails and the sitemap need your real address, not localhost. Set both to the same https:// address, then rebuild: NEXT_PUBLIC_APP_URL is baked in at build time.",
+    auto: () => {
+      const app = env("NEXT_PUBLIC_APP_URL");
+      const auth = env("BETTER_AUTH_URL");
+      const origin = (u: string) => {
+        try {
+          return new URL(u).origin;
+        } catch {
+          return "";
+        }
+      };
+      let problem = "";
+      if (isLocal(app) || isLocal(auth)) problem = "Still pointing at localhost";
+      else if (!origin(app) || !origin(auth)) problem = "One of the two is not a valid address";
+      else if (!app.startsWith("https://") || !auth.startsWith("https://")) problem = "Use https:// for a live site";
+      else if (origin(app) !== origin(auth)) problem = "The two values must be the same address";
+      return { done: !problem, detail: problem ? `${problem} (NEXT_PUBLIC_APP_URL = ${app || "not set"})` : app };
+    },
   },
   {
     key: "hide-demo", phase: "p0", kind: "business", title: "Hide or replace the demo products", href: "/admin/products",
@@ -126,6 +142,8 @@ export const defs: Def[] = [
   { key: "headers", phase: "p2", kind: "code", title: "Security headers (CSP, frame, referrer, HSTS)", why: "Cheap to add, and some buyers' scanners look for them." },
   { key: "deploy", phase: "p2", kind: "code", title: "Dockerfile and compose file, with a one-command deploy", why: "So a deploy is a script, not steps in your head." },
   { key: "backups", phase: "p2", kind: "setup", title: "Nightly backups of the database and uploads (including uploads/private), with a tested restore", why: "If the disk dies, the paid files and the customer list die with it." },
+  { key: "live-check", phase: "p2", kind: "setup", title: "Open Admin → Live check and fix everything marked Problem", href: "/admin/health", after: ["domain"], why: "The site tests its own public address, the database, email and payments, and tells you the fix for each problem. Run it after every deploy." },
+  { key: "uptime", phase: "p2", kind: "setup", title: "Add a free uptime monitor on /api/health", why: "UptimeRobot or Better Stack can email you within minutes if the site or tunnel goes down, so you hear about it before a customer does." },
   { key: "video", phase: "p2", kind: "code", title: "Protected course video (domain-restricted host)", why: "An unlisted YouTube link can be copied and shared by any buyer." },
   { key: "tax", phase: "p2", kind: "business", title: "Ask an accountant about sales tax / VAT, then add it to checkout if needed", after: ["llc-started"], why: "The legal text says tax is added where required; checkout does not compute it yet." },
 

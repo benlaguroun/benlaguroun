@@ -18,6 +18,7 @@ const items: { href: string; label: string; exact?: boolean; badge?: Badge }[] =
   { href: "/admin/posts", label: "Blog" },
   { href: "/admin/testimonials", label: "Testimonials" },
   { href: "/admin/subscribers", label: "Subscribers" },
+  { href: "/admin/health", label: "Live check" },
   { href: "/admin/errors", label: "Errors", badge: "errors" },
 ];
 
