@@ -8,6 +8,7 @@ import { providerLabel } from "@/lib/payments/labels";
 import { siteUrl } from "@/lib/site-url";
 import { LINK_DAYS, signedDownloadUrl } from "@/lib/downloads";
 import { reportError } from "@/lib/errors";
+import { companyFooter } from "@/lib/company";
 
 // Email text lives here (not in the page dictionaries) because it is only used
 // on the server.
@@ -110,6 +111,7 @@ ${row(c.order, ref)}${row(c.date, when)}${row(c.method, method)}${row(c.amount, 
 <a href="${esc(link)}" style="display:inline-block;background:#6d28d9;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:600">${esc(buttonText)}</a>
 ${hasFile ? `<p style="margin:16px 0 0;font-size:13px;color:#64748b">${esc(linkNote)} <a href="${esc(library)}" style="color:#6d28d9">${esc(c.openLibrary)}</a></p>` : ""}
 <p style="margin:28px 0 0;font-size:13px;color:#64748b">${esc(c.foot)}</p>
+<p style="margin:12px 0 0;font-size:12px;color:#94a3b8">${esc(companyFooter())}</p>
 </div></body></html>`;
 
     const text = `${c.title}\n\n${intro}\n\n${c.order}: ${ref}\n${c.date}: ${when}\n${c.method}: ${method}\n${c.amount}: ${price}\n\n${buttonText}: ${link}${hasFile ? `\n${linkNote}\n${library}` : ""}\n\n${c.foot}`;

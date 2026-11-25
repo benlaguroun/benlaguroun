@@ -17,16 +17,18 @@ export default async function AdminLayout({
 }) {
   const locale = await resolveLocale(params);
   await requireAdmin(locale);
-  const [newMessages, openErrors] = await Promise.all([
+  const [newMessages, openErrors, assistantWaiting] = await Promise.all([
     prisma.lead.count({ where: { status: "NEW" } }),
     prisma.errorLog.count({ where: { resolved: false } }),
+    // Before the assistant's table exists (until db:push), this must not break the admin.
+    prisma.agentTask.count({ where: { status: "PENDING" } }).catch(() => 0),
   ]);
 
   return (
     <div className="wrap grid gap-8 py-10 lg:grid-cols-[13rem_1fr]">
       <NoTrack />
       <aside className="lg:sticky lg:top-24 lg:h-fit">
-        <AdminNav locale={locale} newMessages={newMessages} openErrors={openErrors} />
+        <AdminNav locale={locale} newMessages={newMessages} openErrors={openErrors} assistantWaiting={assistantWaiting} />
       </aside>
       <div className="min-w-0">{children}</div>
     </div>

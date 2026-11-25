@@ -9,6 +9,7 @@ import { locales } from "@/i18n/config";
 import { site } from "@/config/site";
 import { emailConfigured, esc, ownerEmail, sendEmail } from "@/lib/email";
 import { clientIp, rateLimited } from "@/lib/rate-limit";
+import { runAgent } from "@/lib/agent";
 
 // The server returns a code; the form turns it into text in the visitor's language.
 export type LeadState = { ok: true } | { ok: false; code: "missing" | "email" | "long" | "many" } | null;
@@ -30,7 +31,14 @@ export async function createLead(_prev: LeadState, formData: FormData): Promise<
   // At most 5 messages per visitor every 10 minutes: plenty for a person, a wall for a script.
   if (rateLimited(`lead:${await clientIp()}`, 5, 10 * 60_000)) return { ok: false, code: "many" };
 
-  await prisma.lead.create({ data: { name, email, message, interest, budget } });
+  const lead = await prisma.lead.create({ data: { name, email, message, interest, budget } });
+
+  // Ben (the AI assistant) reads it and prepares a draft reply for you to approve.
+  // Runs after the visitor has their answer. It does nothing when Ben is switched off,
+  // and it never sends anything: you approve every reply in Admin -> Assistant.
+  after(async () => {
+    await runAgent({ leadId: lead.id, kind: "inbound" });
+  });
 
   // Tell you about it. Runs after the visitor already has their answer, and a
   // failure here never affects them. Replying to the email answers the visitor.

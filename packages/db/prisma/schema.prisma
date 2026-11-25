@@ -262,6 +262,8 @@ model Lead {
   client    Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
   createdAt DateTime   @default(now())
 
+  agentTasks AgentTask[]
+
   @@index([status, createdAt])
 }
 
@@ -420,4 +422,62 @@ model ErrorLog {
   notifiedAt  DateTime? // when you were last emailed about it
 
   @@index([resolved, lastSeen])
+}
+
+// Items on the Admin -> Roadmap page that you tick off by hand. Items the site can
+// check by itself (email set, products published, ...) are not stored here.
+model RoadmapItem {
+  key       String   @id // matches a key in apps/web/src/lib/roadmap.ts
+  done      Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+}
+
+// Ben, the AI assistant. Every time it reads a message it writes one AgentTask: what it
+// understood, how sure it is, and the reply it drafted. Nothing is sent until you approve.
+enum AgentTaskStatus {
+  PENDING   // waiting for your decision
+  SENT      // you approved and the reply was emailed
+  REJECTED  // you decided not to send it
+  HANDLED   // nothing to send (spam), or you answered it yourself
+  FAILED    // the assistant could not produce a draft
+}
+
+model AgentTask {
+  id          String          @id @default(cuid())
+  kind        String          // "inbound" (new message), "draft" (you asked), "order" (you gave an instruction)
+  status      AgentTaskStatus @default(PENDING)
+  leadId      String?
+  lead        Lead?           @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  instruction String?         // your order, when kind is "order"
+  category    String?         // sales_lead | support | refund | partnership | spam | other
+  urgency     String?         // low | normal | high
+  language    String?         // en | fr | ar
+  summary     String?
+  confidence  Int?            // 0-100, how sure the assistant is
+  needsYou    String?         // why a person has to decide, when it says so
+  subject     String?
+  draft       String?         // the reply it proposes
+  finalText   String?         // what was actually sent (your edited version)
+  provider    String?         // anthropic | openai | groq: who actually wrote the draft
+  model       String?
+  tokensIn    Int             @default(0)
+  tokensOut   Int             @default(0)
+  error       String?
+  createdAt   DateTime        @default(now())
+  decidedAt   DateTime?
+
+  @@index([status, createdAt])
+  @@index([leadId])
+}
+
+// One row (id "main"): the on/off switch and the rules Ben works by.
+model AgentConfig {
+  id           String   @id @default("main")
+  enabled      Boolean  @default(false) // master switch: when off, Ben does nothing at all
+  provider     String   @default("anthropic") // main AI service: anthropic (Claude) | openai | groq
+  fallback     Boolean  @default(true)        // if the main one fails, try the others that have a key
+  dailyLimit   Int      @default(30)    // most drafts per day, so a flood of messages cannot run up a bill
+  signature    String   @default("Ben's assistant (AI), reviewed by Ben")
+  instructions String   @default("")    // your own rules: tone, availability, what to offer, what never to promise
+  updatedAt    DateTime @updatedAt
 }

@@ -1,12 +1,26 @@
 // One place to define your brand. Edit this file first.
 export const site = {
-  name: "Ben Laguroun",
-  email: "hello@example.com",
-  founder: "Ben Laguroun",
+  name: "Mohamed BenLaguroun",
+  email: "benlaguroun@gmail.com",
+  founder: "BenLaguroun",
+
+  // Your company, once it exists. Leave legalName empty to trade under your own
+  // name for now: the legal pages, footer, receipts and newsletter then use the
+  // brand name and your country below. When the LLC is registered, fill these in
+  // and everything updates by itself (and bump `legal.updated`).
+  company: {
+    legalName: "", // exactly as registered, e.g. "Laguroun Digital LLC"
+    entityType: "LLC", // shown as "a {entityType} registered in {jurisdiction}"
+    jurisdiction: "", // where it is registered, e.g. "Wyoming, United States"
+    registrationNumber: "", // the number on your certificate of formation
+    address: "", // registered address, shown on the legal pages and in emails
+    taxNumber: "", // VAT / EIN, only if you want it shown
+    governingLaw: "", // empty = same as jurisdiction, e.g. "the State of Wyoming, United States"
+  },
 
   // Used in the legal pages. Check these match how you really run the business.
   legal: {
-    country: "Morocco",
+    country: "Morocco", // where you work from, used until a company jurisdiction is set
     refundDays: 14, // how long buyers have to ask for a refund on templates and courses
     updated: "2026-11-25", // change this date whenever you edit the legal text
   },
@@ -16,8 +30,8 @@ export const site = {
   // (hero, About page and footer).
   social: [
     { key: "github", label: "GitHub", href: "https://github.com/benlaguroun" },
-    { key: "linkedin", label: "LinkedIn", href: "" }, // e.g. https://www.linkedin.com/in/your-handle
-    { key: "facebook", label: "Facebook", href: "" }, // e.g. https://www.facebook.com/your.page
+    { key: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/mohamed-benlaguroun/" }, // e.g. https://www.linkedin.com/in/your-handle
+    { key: "facebook", label: "Facebook", href: "https://www.facebook.com/ben.moha.5074/" }, // e.g. https://www.facebook.com/your.page
   ],
 
   // Technologies shown in the scrolling strip and on the About page.

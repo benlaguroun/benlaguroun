@@ -3,16 +3,23 @@ import Link from "next/link";
 import { site } from "@/config/site";
 import { localeMeta, lp, type Locale } from "@/i18n/config";
 import { fill, getDict } from "@/i18n/dictionaries";
-import { legalDocs, type LegalKey } from "@/i18n/legal";
+import { companyLabels, identity, legalDocs, type LegalKey } from "@/i18n/legal";
+import { governingLaw, hasCompany, jurisdiction, sellerName } from "@/lib/company";
 import { pageMetadata } from "@/lib/seo";
 import { Reveal } from "./reveal";
 
-const values = () => ({
-  name: site.name,
-  email: site.email,
-  country: site.legal.country,
-  days: site.legal.refundDays,
-});
+const values = (locale: Locale) => {
+  const base = {
+    brand: site.name,
+    seller: sellerName,
+    email: site.email,
+    jurisdiction,
+    governing: governingLaw,
+    days: site.legal.refundDays,
+    entityType: site.company.entityType,
+  };
+  return { ...base, sellerLine: fill(hasCompany ? identity[locale].company : identity[locale].person, base) };
+};
 
 export function legalMetadata(locale: Locale, key: LegalKey): Metadata {
   const doc = legalDocs[locale][key];
@@ -23,7 +30,8 @@ export function legalMetadata(locale: Locale, key: LegalKey): Metadata {
 export function LegalDocument({ locale, docKey }: { locale: Locale; docKey: LegalKey }) {
   const t = getDict(locale);
   const doc = legalDocs[locale][docKey];
-  const v = values();
+  const v = values(locale);
+  const labels = companyLabels[locale];
   const date = new Intl.DateTimeFormat(localeMeta[locale].intl, { dateStyle: "long" }).format(new Date(site.legal.updated));
   const others = (["privacy", "terms", "refunds"] as const).filter((k) => k !== docKey);
 
@@ -52,6 +60,32 @@ export function LegalDocument({ locale, docKey }: { locale: Locale; docKey: Lega
           </section>
         ))}
       </div>
+
+      {hasCompany && (
+        <section aria-labelledby="company-details" className="glass mt-12 p-6">
+          <h2 id="company-details" className="display text-lg font-semibold">{labels.heading}</h2>
+          <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-[auto_1fr]">
+            {(
+              [
+                [labels.legalName, site.company.legalName],
+                [labels.type, site.company.entityType],
+                [labels.registeredIn, site.company.jurisdiction],
+                [labels.number, site.company.registrationNumber],
+                [labels.vat, site.company.taxNumber],
+                [labels.address, site.company.address],
+                [labels.contact, site.email],
+              ] as const
+            )
+              .filter(([, value]) => value.trim())
+              .map(([label, value]) => (
+                <div key={label} className="contents">
+                  <dt className="text-mute">{label}</dt>
+                  <dd className="font-medium" dir="ltr" style={{ unicodeBidi: "plaintext" }}>{value}</dd>
+                </div>
+              ))}
+          </dl>
+        </section>
+      )}
 
       <div className="mt-14 border-t border-line pt-6 text-sm text-mute">
         <p>{fill(t.legal.questions, { email: site.email })}</p>

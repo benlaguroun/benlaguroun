@@ -1,7 +1,7 @@
-import { site } from "@/config/site";
 import type { Locale } from "@/i18n/config";
 import { emailConfigured, esc, sendEmail } from "@/lib/email";
 import { siteUrl } from "@/lib/site-url";
+import { companyFooter } from "@/lib/company";
 
 const copy: Record<Locale, { subject: string; title: string; body: string; visit: string; unsub: string }> = {
   en: {
@@ -41,7 +41,7 @@ export async function sendWelcomeEmail(sub: { email: string; locale: Locale; tok
 <h1 style="font-size:22px;margin:0 0 12px">${esc(c.title)}</h1>
 <p style="font-size:15px;line-height:1.6;margin:0 0 20px">${esc(c.body)}</p>
 <p style="margin:0 0 28px"><a href="${esc(home)}" style="color:#4f46e5">${esc(c.visit)}</a></p>
-<p style="font-size:12px;color:#666;border-top:1px solid #ddd;padding-top:14px">${esc(site.name)} · <a href="${esc(unsub)}" style="color:#666">${esc(c.unsub)}</a></p>
+<p style="font-size:12px;color:#666;border-top:1px solid #ddd;padding-top:14px">${esc(companyFooter())} · <a href="${esc(unsub)}" style="color:#666">${esc(c.unsub)}</a></p>
 </div>`;
   const text = `${c.title}\n\n${c.body}\n\n${home}\n\n${c.unsub}: ${unsub}`;
 

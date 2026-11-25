@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type Badge = "messages" | "errors";
+type Badge = "messages" | "errors" | "assistant";
 
 const items: { href: string; label: string; exact?: boolean; badge?: Badge }[] = [
   { href: "/admin", label: "Overview", exact: true },
+  { href: "/admin/roadmap", label: "Roadmap" },
+  { href: "/admin/assistant", label: "Ben (AI)", badge: "assistant" },
   { href: "/admin/analytics", label: "Analytics" },
   { href: "/admin/messages", label: "Messages", badge: "messages" },
   { href: "/admin/clients", label: "Clients" },
@@ -19,9 +21,19 @@ const items: { href: string; label: string; exact?: boolean; badge?: Badge }[] =
   { href: "/admin/errors", label: "Errors", badge: "errors" },
 ];
 
-export function AdminNav({ locale, newMessages, openErrors }: { locale: string; newMessages: number; openErrors: number }) {
+export function AdminNav({
+  locale,
+  newMessages,
+  openErrors,
+  assistantWaiting,
+}: {
+  locale: string;
+  newMessages: number;
+  openErrors: number;
+  assistantWaiting: number;
+}) {
   const pathname = usePathname() ?? "";
-  const counts: Record<Badge, number> = { messages: newMessages, errors: openErrors };
+  const counts: Record<Badge, number> = { messages: newMessages, errors: openErrors, assistant: assistantWaiting };
 
   return (
     <nav aria-label="Admin" className="glass flex gap-1 overflow-x-auto p-2 lg:flex-col">

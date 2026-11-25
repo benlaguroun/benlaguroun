@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/admin";
 import { fmtDateTime } from "@/lib/admin-format";
 import { resolveLocale } from "@/i18n/resolve";
 import { convertLeadToClient, deleteLead, setLeadStatus } from "../../actions";
+import { askBen } from "../../assistant-actions";
 import { AdminHeading, Pill, leadTone } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
@@ -96,6 +97,11 @@ export default async function MessagePage({ params }: Props) {
           >
             Reply by email
           </a>
+          <form action={askBen}>
+            <input type="hidden" name="leadId" value={lead.id} />
+            <input type="hidden" name="locale" value={locale} />
+            <button type="submit" className="btn btn-glass !px-4 !py-2 text-xs">Ask Ben to draft a reply</button>
+          </form>
           <StatusButton id={lead.id} status="REPLIED" locale={locale} label="Mark as replied" current={lead.status} />
           <StatusButton id={lead.id} status="ARCHIVED" locale={locale} label="Archive" current={lead.status} />
           {lead.status !== "READ" && lead.status !== "NEW" && (

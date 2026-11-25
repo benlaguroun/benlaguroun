@@ -4,6 +4,7 @@ import { lp, type Locale } from "@/i18n/config";
 import { SocialGlyph } from "./social-links";
 import { NewsletterForm } from "./newsletter-form";
 import { getDict } from "@/i18n/dictionaries";
+import { sellerName } from "@/lib/company";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
   const t = getDict(locale);
@@ -61,7 +62,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
       <div className="border-t border-line">
         <div className="wrap flex flex-col items-center justify-between gap-3 py-5 text-xs text-mute sm:flex-row">
           <p>
-            © {new Date().getFullYear()} {site.name}. {t.footer.rights}
+            © {new Date().getFullYear()} {sellerName}. {t.footer.rights}
           </p>
           <nav aria-label="Legal" className="flex flex-wrap justify-center gap-x-5 gap-y-1">
             <Link href={lp(locale, "/privacy")} className="transition hover:text-ink">{t.legal.privacy}</Link>
