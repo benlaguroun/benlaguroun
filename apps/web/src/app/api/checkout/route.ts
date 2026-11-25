@@ -4,14 +4,17 @@ import { getSession } from "@/lib/session";
 import { availableProviders, getProvider } from "@/lib/payments";
 import { site } from "@/lib/site-url";
 import { defaultLocale, isLocale, lp } from "@/i18n/config";
+import { reportError } from "@/lib/errors";
+import { needsVerification } from "@/lib/verification";
 
-type Code = "signin" | "invalid" | "failed" | "method";
+type Code = "signin" | "invalid" | "failed" | "method" | "verify";
 
 const fail = (code: Code, status: number) => NextResponse.json({ code }, { status });
 
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session) return fail("signin", 401);
+  if (needsVerification(session.user as { emailVerified?: boolean; role?: string })) return fail("verify", 403);
 
   const body = (await req.json().catch(() => ({}))) as { productId?: string; locale?: string; provider?: string };
   const locale = isLocale(body.locale) ? body.locale : defaultLocale;
@@ -67,6 +70,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ url: checkout.url });
   } catch (err) {
     console.error(`${provider.name} checkout creation failed`, err);
+    await reportError("payment", err, `${provider.name} checkout for ${order.productId}`);
     await prisma.order.delete({ where: { id: order.id } }).catch(() => {});
     return fail("failed", 502);
   }

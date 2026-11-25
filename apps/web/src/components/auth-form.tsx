@@ -34,7 +34,7 @@ export function AuthForm({
 
     const result =
       mode === "signup"
-        ? await authClient.signUp.email({ email, password, name })
+        ? await authClient.signUp.email({ email, password, name, callbackURL: next })
         : await authClient.signIn.email({ email, password });
 
     if (result.error) {

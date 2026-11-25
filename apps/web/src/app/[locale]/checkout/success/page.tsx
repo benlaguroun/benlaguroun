@@ -11,6 +11,7 @@ import { providerLabel } from "@/lib/payments/labels";
 import { getStripe } from "@/lib/payments/stripe";
 import { requireSession } from "@/lib/session";
 import { Check } from "@/components/icons";
+import { reportError } from "@/lib/errors";
 
 export const metadata: Metadata = { title: "Thank you", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -45,6 +46,7 @@ export default async function CheckoutSuccess({ params, searchParams }: Props) {
       }
     } catch (err) {
       console.error("Could not confirm the Stripe payment", err);
+      await reportError("payment", err, `Stripe confirmation, order ${orderId}`);
     }
   }
 
@@ -88,10 +90,10 @@ export default async function CheckoutSuccess({ params, searchParams }: Props) {
           {paid && raw?.type === "COURSE" && (
             <Link href={lp(locale, `/learn/${raw.slug}`)} className="btn btn-primary">{c.startCourse}</Link>
           )}
-          {paid && raw?.type === "TEMPLATE" && raw.deliveryUrl && (
-            <a href={raw.deliveryUrl} target="_blank" rel="noreferrer" className="btn btn-primary">{c.download}</a>
+          {paid && raw?.type === "TEMPLATE" && (raw.deliveryFile || raw.deliveryUrl) && (
+            <a href={`/api/download/${raw.id}`} className="btn btn-primary">{c.download}</a>
           )}
-          <Link href={lp(locale, "/dashboard")} className={`btn ${paid && raw && (raw.type === "COURSE" || raw.deliveryUrl) ? "btn-glass" : "btn-primary"}`}>
+          <Link href={lp(locale, "/dashboard")} className={`btn ${paid && raw && (raw.type === "COURSE" || raw.deliveryFile || raw.deliveryUrl) ? "btn-glass" : "btn-primary"}`}>
             {c.openLibrary}
           </Link>
           {raw && <Link href={lp(locale, productPath(raw))} className="btn btn-glass">{c.viewProduct}</Link>}

@@ -2,7 +2,9 @@ import { site } from "@/config/site";
 import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
 import { emailConfigured, esc, sendEmail } from "@/lib/email";
 
-const copy: Record<Locale, { subject: string; title: string; body: string; button: string; ignore: string; expires: string }> = {
+type Copy = { subject: string; title: string; body: string; button: string; ignore: string; expires: string };
+
+const reset: Record<Locale, Copy> = {
   en: {
     subject: "Reset your password",
     title: "Reset your password",
@@ -29,7 +31,34 @@ const copy: Record<Locale, { subject: string; title: string; body: string; butto
   },
 };
 
-/** The language the reset was requested from: the first part of the redirect path ("/fr/reset-password"). */
+const verify: Record<Locale, Copy> = {
+  en: {
+    subject: "Confirm your email address",
+    title: "Confirm your email address",
+    body: "Thanks for creating an account. Confirm that this email address is yours so you can buy and download from your library.",
+    button: "Confirm my email",
+    expires: "This link works for 24 hours.",
+    ignore: "If you didn't create an account, you can ignore this email and nothing will happen.",
+  },
+  fr: {
+    subject: "Confirmez votre adresse e-mail",
+    title: "Confirmez votre adresse e-mail",
+    body: "Merci d'avoir créé un compte. Confirmez que cette adresse e-mail est bien la vôtre pour pouvoir acheter et télécharger depuis votre bibliothèque.",
+    button: "Confirmer mon e-mail",
+    expires: "Ce lien est valable 24 heures.",
+    ignore: "Si vous n'avez pas créé de compte, ignorez cet e-mail : il ne se passera rien.",
+  },
+  ar: {
+    subject: "أكّد عنوان بريدك الإلكتروني",
+    title: "أكّد عنوان بريدك الإلكتروني",
+    body: "شكرًا لإنشاء حسابك. أكّد أن هذا البريد الإلكتروني يخصّك حتى تتمكن من الشراء والتحميل من مكتبتك.",
+    button: "تأكيد بريدي الإلكتروني",
+    expires: "هذا الرابط صالح لمدة 24 ساعة.",
+    ignore: "إذا لم تنشئ حسابًا فتجاهل هذه الرسالة ولن يحدث أي شيء.",
+  },
+};
+
+/** The language the link was requested from: the first part of the redirect path ("/fr/reset-password"). */
 function localeFromUrl(url: string): Locale {
   try {
     const callback = new URL(url).searchParams.get("callbackURL") ?? "";
@@ -40,11 +69,15 @@ function localeFromUrl(url: string): Locale {
   }
 }
 
-/** Sends the password reset link. Never throws: it must not slow down or break the request. */
-export async function sendPasswordResetEmail(user: { email: string; name?: string | null }, url: string) {
+async function sendLinkEmail(
+  kind: "password reset" | "email verification",
+  copy: Record<Locale, Copy>,
+  user: { email: string },
+  url: string,
+) {
   if (!emailConfigured()) {
     // Without email set up, show the link in the server log so you can test locally.
-    if (process.env.NODE_ENV !== "production") console.warn(`[password reset] ${user.email}: ${url}`);
+    if (process.env.NODE_ENV !== "production") console.warn(`[${kind}] ${user.email}: ${url}`);
     return;
   }
 
@@ -63,6 +96,16 @@ export async function sendPasswordResetEmail(user: { email: string; name?: strin
   const text = `${c.title}\n\n${c.body}\n\n${url}\n\n${c.expires}\n${c.ignore}`;
 
   await sendEmail({ to: user.email, subject: c.subject, html, text }).catch((err) =>
-    console.error("Could not send the password reset email", err),
+    console.error(`Could not send the ${kind} email`, err),
   );
+}
+
+/** Sends the password reset link. Never throws: it must not slow down or break the request. */
+export function sendPasswordResetEmail(user: { email: string; name?: string | null }, url: string) {
+  return sendLinkEmail("password reset", reset, user, url);
+}
+
+/** Sends the "confirm your email" link. Never throws. */
+export function sendVerificationEmail(user: { email: string; name?: string | null }, url: string) {
+  return sendLinkEmail("email verification", verify, user, url);
 }

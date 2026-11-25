@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@brand/db";
 import { getPayPalLink, verifyPayPalWebhook } from "@/lib/payments/paypal";
 import { fulfillOrder, refundOrder } from "@/lib/orders";
+import { reportError } from "@/lib/errors";
 
 type CaptureResource = {
   id: string;
@@ -19,6 +20,7 @@ export async function POST(req: Request) {
     valid = await verifyPayPalWebhook(req.headers, body);
   } catch (err) {
     console.error("PayPal webhook verification failed", err);
+    await reportError("webhook", err, "POST /api/webhooks/paypal");
   }
   if (!valid) return NextResponse.json({ error: "Invalid signature." }, { status: 400 });
 

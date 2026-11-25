@@ -24,8 +24,8 @@ export function PurchasePanel({ product, locale, signedIn, owned }: Props) {
           <Link href={lp(locale, `/learn/${product.slug}`)} className="btn btn-primary w-full">
             {t.product.continueLearning}
           </Link>
-        ) : product.deliveryUrl ? (
-          <a href={product.deliveryUrl} className="btn btn-primary w-full" target="_blank" rel="noreferrer">
+        ) : product.deliveryFile || product.deliveryUrl ? (
+          <a href={`/api/download/${product.id}`} className="btn btn-primary w-full">
             {t.product.download}
           </a>
         ) : (

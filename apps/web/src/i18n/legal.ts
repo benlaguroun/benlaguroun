@@ -30,6 +30,7 @@ const en: Record<LegalKey, LegalDoc> = {
           "Messages: what you write in the contact form, including your name, email, the service you are interested in and your budget range if you choose to give it.",
           "Newsletter: your email address and the language of the page you signed up from, only if you subscribe.",
           "Technical data: when you sign in, your IP address and browser type are stored with your session so I can keep your account secure.",
+          "Visit statistics: for each page opened I record the page, your language, the website you came from, your country and whether you use a phone, tablet or computer. I do not store your IP address and I set no cookie for this. A code that changes every day lets me count visitors without being able to recognise anyone from one day to the next. If your browser sends a \"Do Not Track\" signal, nothing is recorded.",
         ],
       },
       {
@@ -54,7 +55,7 @@ const en: Record<LegalKey, LegalDoc> = {
       {
         h: "Cookies",
         p: [
-          "This site uses only the cookies needed to keep you signed in and to remember your language. It does not use advertising cookies. If I add analytics later, I will choose a privacy-friendly tool and update this page.",
+          "This site uses only the cookies needed to keep you signed in and to remember your language. It does not use advertising or tracking cookies, and the visit statistics described above work without any cookie.",
         ],
       },
       {
@@ -212,6 +213,7 @@ const fr: Record<LegalKey, LegalDoc> = {
           "Messages : ce que vous écrivez dans le formulaire de contact, y compris votre nom, votre e-mail, le service qui vous intéresse et votre budget si vous choisissez de l'indiquer.",
           "Newsletter : votre adresse e-mail et la langue de la page d'inscription, uniquement si vous vous abonnez.",
           "Données techniques : à la connexion, votre adresse IP et votre navigateur sont enregistrés avec votre session pour sécuriser votre compte.",
+          "Statistiques de visite : pour chaque page ouverte, j'enregistre la page, votre langue, le site d'où vous venez, votre pays et le type d'appareil (téléphone, tablette ou ordinateur). Je ne stocke pas votre adresse IP et je ne dépose aucun cookie pour cela. Un code qui change chaque jour me permet de compter les visiteurs sans pouvoir reconnaître quelqu'un d'un jour à l'autre. Si votre navigateur envoie un signal « Do Not Track », rien n'est enregistré.",
         ],
       },
       {
@@ -236,7 +238,7 @@ const fr: Record<LegalKey, LegalDoc> = {
       {
         h: "Cookies",
         p: [
-          "Ce site utilise uniquement les cookies nécessaires pour vous garder connecté et mémoriser votre langue. Il n'utilise pas de cookies publicitaires. Si j'ajoute plus tard un outil de statistiques, je choisirai un outil respectueux de la vie privée et je mettrai cette page à jour.",
+          "Ce site utilise uniquement les cookies nécessaires pour vous garder connecté et mémoriser votre langue. Il n'utilise ni cookies publicitaires ni cookies de suivi, et les statistiques de visite décrites plus haut fonctionnent sans aucun cookie.",
         ],
       },
       {
@@ -394,6 +396,7 @@ const ar: Record<LegalKey, LegalDoc> = {
           "الرسائل: ما تكتبه في نموذج التواصل، ويشمل اسمك وبريدك والخدمة التي تهمّك ونطاق ميزانيتك إن اخترت ذكره.",
           "النشرة البريدية: بريدك الإلكتروني ولغة الصفحة التي اشتركت منها، وذلك فقط إذا اشتركت.",
           "بيانات تقنية: عند تسجيل الدخول يُحفظ عنوان IP ونوع المتصفح مع جلستك لحماية حسابك.",
+          "إحصاءات الزيارة: لكل صفحة تُفتح أسجّل الصفحة ولغتك والموقع الذي جئت منه وبلدك ونوع جهازك (هاتف أو لوحي أو حاسوب). لا أحفظ عنوان IP الخاص بك ولا أضع أي ملف تعريف ارتباط لهذا الغرض. ويتيح لي رمز يتغير كل يوم عدّ الزوار دون القدرة على التعرف على أحد من يوم إلى آخر. وإذا أرسل متصفحك إشارة «عدم التتبع» فلا يُسجَّل شيء.",
         ],
       },
       {
@@ -418,7 +421,7 @@ const ar: Record<LegalKey, LegalDoc> = {
       {
         h: "ملفات تعريف الارتباط",
         p: [
-          "يستخدم هذا الموقع فقط ملفات تعريف الارتباط اللازمة لإبقائك مسجّل الدخول وتذكّر لغتك. ولا يستخدم ملفات إعلانية. وإذا أضفت أدوات إحصاء لاحقًا فسأختار أداة تحترم الخصوصية وأحدّث هذه الصفحة.",
+          "يستخدم هذا الموقع فقط ملفات تعريف الارتباط اللازمة لإبقائك مسجّل الدخول وتذكّر لغتك. ولا يستخدم ملفات إعلانية أو ملفات تتبّع، وإحصاءات الزيارة الموصوفة أعلاه تعمل دون أي ملف.",
         ],
       },
       {

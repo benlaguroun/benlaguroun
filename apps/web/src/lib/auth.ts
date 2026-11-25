@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { prisma } from "@brand/db";
-import { sendPasswordResetEmail } from "@/lib/auth-email";
+import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/auth-email";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
@@ -17,6 +17,16 @@ export const auth = betterAuth({
     // when the address exists, which would reveal who has an account.
     sendResetPassword: async ({ user, url }) => {
       void sendPasswordResetEmail(user, url);
+    },
+  },
+  emailVerification: {
+    // Sent when someone signs up, and again from the "send it again" button.
+    // Signing in is never blocked: only buying needs a confirmed address (see lib/verification.ts).
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    expiresIn: 60 * 60 * 24,
+    sendVerificationEmail: async ({ user, url }) => {
+      void sendVerificationEmail(user, url);
     },
   },
   user: {

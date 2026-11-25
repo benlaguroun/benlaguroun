@@ -5,6 +5,7 @@ import { capturePayPalOrder } from "@/lib/payments/paypal";
 import { fulfillOrder } from "@/lib/orders";
 import { defaultLocale, isLocale, lp } from "@/i18n/config";
 import { site } from "@/lib/site-url";
+import { reportError } from "@/lib/errors";
 
 /**
  * PayPal sends the buyer here after they approve the payment. We take the money
@@ -41,6 +42,7 @@ export async function GET(req: Request) {
     const expected = (order.amountCents / 100).toFixed(2);
     if (result.amount !== expected || result.currency !== order.currency.toUpperCase() || result.customId !== order.id) {
       console.error("PayPal capture did not match the order", { orderId: order.id, result });
+      await reportError("payment", new Error(`PayPal capture did not match order ${order.id}`), "GET /api/paypal/return");
       return go(retry);
     }
 
@@ -48,6 +50,7 @@ export async function GET(req: Request) {
     return go(success);
   } catch (err) {
     console.error("PayPal capture failed", err);
+    await reportError("payment", err, `PayPal capture, order ${order.id}`);
     return go(retry);
   }
 }

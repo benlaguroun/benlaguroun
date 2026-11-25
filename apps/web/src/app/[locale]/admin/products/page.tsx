@@ -74,7 +74,7 @@ export default async function AdminProductsPage({ params, searchParams }: Props)
                   <p className="mt-1 text-sm text-mute">
                     {p.priceCents != null ? money(p.priceCents, p.currency) : "Custom quote"}
                     {lessons != null && ` · ${lessons} lesson${lessons === 1 ? "" : "s"}`}
-                    {p.type === "TEMPLATE" && !p.deliveryUrl && <span className="text-amber-300"> · no download link yet</span>}
+                    {p.type === "TEMPLATE" && !p.deliveryFile && !p.deliveryUrl && <span className="text-amber-300"> · no download file yet</span>}
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">

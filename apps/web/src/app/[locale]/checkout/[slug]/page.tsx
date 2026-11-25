@@ -10,6 +10,8 @@ import { formatPrice, productPath } from "@/lib/format";
 import { userOwns } from "@/lib/access";
 import { availableProviders } from "@/lib/payments";
 import { requireSession } from "@/lib/session";
+import { needsVerification } from "@/lib/verification";
+import { VerifyEmailNotice } from "@/components/verify-email-notice";
 import { ArrowBack, Check } from "@/components/icons";
 import { CheckoutForm, type Method } from "@/components/checkout-form";
 import { LegalConsent } from "@/components/legal-consent";
@@ -49,6 +51,10 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
     lemonsqueezy: { name: "lemonsqueezy", title: c.lemonTitle, body: c.lemonBody },
   };
   const methods = availableProviders(raw.currency).map((p) => labels[p.name]!);
+  const unverified = needsVerification(session.user as { emailVerified?: boolean; role?: string });
+  // Better Auth sends people back here with ?error=invalid_token when a confirmation link is bad or old.
+  const linkError = !!error && /token/i.test(error);
+  const checkoutPath = lp(locale, `/checkout/${slug}`);
 
   return (
     <div className="wrap max-w-5xl py-14">
@@ -80,7 +86,7 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
       {cancelled && (
         <p className="mt-8 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-mute">{c.cancelled}</p>
       )}
-      {error && (
+      {error && !linkError && (
         <p role="alert" className="mt-8 rounded-xl border border-rose/30 bg-rose/10 px-4 py-3 text-sm text-rose">
           {c.returnFailed}
         </p>
@@ -114,7 +120,13 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
             <p className="mt-1 text-xs text-mute">{fill(c.signedInAs, { email: session.user.email })}</p>
 
             <div className="mt-6">
-              {methods.length === 0 ? (
+              {unverified ? (
+                <div className="space-y-4">
+                  {linkError && <p role="alert" className="text-sm text-rose">{c.verify.invalidLink}</p>}
+                  <VerifyEmailNotice email={session.user.email} callbackURL={checkoutPath} labels={c.verify} />
+                  <Link href={checkoutPath} className="btn btn-primary w-full">{c.verify.refresh}</Link>
+                </div>
+              ) : methods.length === 0 ? (
                 <div>
                   <p className="text-sm text-mute">{c.noMethods}</p>
                   <Link href={lp(locale, "/contact")} className="btn btn-primary mt-5">
@@ -132,7 +144,7 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
                   errors={t.errors}
                 />
               )}
-              {methods.length > 0 && <LegalConsent locale={locale} />}
+              {!unverified && methods.length > 0 && <LegalConsent locale={locale} />}
             </div>
           </section>
         </Reveal>

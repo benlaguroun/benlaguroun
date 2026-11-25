@@ -1,5 +1,6 @@
 import type { Product, ProductType } from "@brand/db";
 import { saveProduct } from "@/app/[locale]/admin/catalog-actions";
+import { DeliveryField } from "./delivery-field";
 import { ImageField } from "./image-fields";
 import { TranslationFields } from "./translation-fields";
 
@@ -98,17 +99,22 @@ export function ProductForm({
 
       {type === "TEMPLATE" && (
         <div className="grid gap-5 sm:grid-cols-2">
-          <div>
-            <label htmlFor="deliveryUrl" className="label">Download link *</label>
-            <input
-              id="deliveryUrl"
-              name="deliveryUrl"
-              dir="ltr"
-              defaultValue={product?.deliveryUrl ?? ""}
-              placeholder="https://drive.google.com/… or a file host"
-              className="field"
-            />
-            <p className="mt-1 text-xs text-mute">Buyers get this link after they pay. Only people who bought it ever see it.</p>
+          <div className="space-y-5">
+            <DeliveryField file={product?.deliveryFile} name={product?.deliveryName} />
+            <div>
+              <label htmlFor="deliveryUrl" className="label">Or a download link</label>
+              <input
+                id="deliveryUrl"
+                name="deliveryUrl"
+                dir="ltr"
+                defaultValue={product?.deliveryUrl ?? ""}
+                placeholder="https://drive.google.com/… (only used if no file is uploaded)"
+                className="field"
+              />
+              <p className="mt-1 text-xs text-mute">
+                A link can't expire or be taken back once a buyer has seen it, so an uploaded file is safer.
+              </p>
+            </div>
           </div>
           <div>
             <label htmlFor="previewUrl" className="label">Live preview link</label>

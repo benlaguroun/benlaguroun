@@ -13,7 +13,7 @@ type Props = {
   payLabel: string;
   processing: string;
   secureNote: string;
-  errors: { signin: string; invalid: string; failed: string; method: string };
+  errors: { signin: string; invalid: string; failed: string; method: string; verify: string };
 };
 
 /** Pick a payment method and go to its secure payment page. */

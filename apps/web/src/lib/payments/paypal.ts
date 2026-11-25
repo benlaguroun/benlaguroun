@@ -183,3 +183,24 @@ export async function getPayPalLink<T>(href: string): Promise<T | null> {
   if (!href.startsWith(`${API}/`)) return null;
   return paypal<T>(href);
 }
+
+/**
+ * Refunds the full amount of a captured PayPal order. Safe to repeat: the request
+ * id makes PayPal return the same refund, and an already-refunded capture counts
+ * as done.
+ */
+export async function refundPayPalOrder(paypalOrderId: string, orderId: string) {
+  const order = await paypal<PayPalOrder>(`/v2/checkout/orders/${encodeURIComponent(paypalOrderId)}`);
+  const capture = order.purchase_units?.[0]?.payments?.captures?.[0];
+  if (!capture) throw new Error("PayPal has no captured payment for this order");
+  try {
+    await paypal(`/v2/payments/captures/${encodeURIComponent(capture.id)}/refund`, {
+      method: "POST",
+      body: {},
+      requestId: `refund-${orderId}`,
+    });
+  } catch (err) {
+    // 422 means PayPal says it was already refunded.
+    if ((err as { status?: number }).status !== 422) throw err;
+  }
+}

@@ -105,7 +105,9 @@ model Product {
   imageUrl    String?
   features    String[]
   translations Json?       // { fr: {name, tagline, description, features}, ar: {...} }
-  deliveryUrl String?     // templates: download link handed over after purchase
+  deliveryUrl String?     // templates: download link handed over after purchase (used when there is no uploaded file)
+  deliveryFile String?    // templates: file uploaded to the server's private folder (preferred over deliveryUrl)
+  deliveryName String?    // templates: the original file name buyers see when they download it
   previewUrl  String?     // templates: live demo
   published   Boolean     @default(true)
   featured    Boolean     @default(false)
@@ -380,4 +382,42 @@ model Post {
   updatedAt    DateTime  @updatedAt
 
   @@index([published, publishedAt])
+}
+
+// ---------------------------------------------------------------------------
+// First-party analytics: no cookies, no IP addresses stored
+// ---------------------------------------------------------------------------
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String   // without the language, e.g. "/services/launch-site"
+  locale    String
+  referrer  String?  // the site they came from (host only)
+  country   String?  // two-letter code, when the host provides it (Cloudflare does)
+  device    String   // mobile | tablet | desktop
+  visitor   String   // a hash that changes every day, so nobody can be followed across days
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Error alerts: the same problem is stored once, with a counter
+// ---------------------------------------------------------------------------
+
+model ErrorLog {
+  id          String    @id @default(cuid())
+  fingerprint String    @unique // groups repeats of the same error
+  source      String    // server | payment | webhook | email
+  message     String
+  stack       String?
+  path        String?   // the request that failed, e.g. "POST /api/checkout"
+  count       Int       @default(1)
+  firstSeen   DateTime  @default(now())
+  lastSeen    DateTime  @default(now())
+  resolved    Boolean   @default(false)
+  notifiedAt  DateTime? // when you were last emailed about it
+
+  @@index([resolved, lastSeen])
 }

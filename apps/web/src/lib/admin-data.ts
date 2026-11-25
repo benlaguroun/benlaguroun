@@ -14,6 +14,9 @@ export type PaymentRow = {
   date: Date;
   /** Only manual payments can be edited. */
   editable: boolean;
+  /** Store orders can be refunded and have their receipt resent. */
+  canRefund?: boolean;
+  canResend?: boolean;
 };
 
 const METHOD_LABEL: Record<string, string> = {
@@ -58,6 +61,8 @@ export async function getPaymentRows(opts: {
         method: providerLabel(o.provider),
         date: o.paidAt ?? o.createdAt,
         editable: false,
+        canRefund: o.status === "PAID",
+        canResend: o.status === "PAID",
       });
     }
   }

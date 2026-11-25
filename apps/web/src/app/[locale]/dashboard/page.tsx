@@ -7,6 +7,8 @@ import { fill, getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
 import { formatPrice, productPath } from "@/lib/format";
 import { requireSession } from "@/lib/session";
+import { needsVerification } from "@/lib/verification";
+import { VerifyEmailNotice } from "@/components/verify-email-notice";
 import { Reveal } from "@/components/reveal";
 import { PageIntro } from "@/components/section-heading";
 import { localeMeta } from "@/i18n/config";
@@ -48,6 +50,10 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       <PageIntro eyebrow={t.dashboard.eyebrow} title={fill(t.dashboard.welcome, { name: firstName })} />
 
       <div className="wrap space-y-16 py-14">
+        {needsVerification(session.user as { emailVerified?: boolean; role?: string }) && (
+          <VerifyEmailNotice email={session.user.email} callbackURL={lp(locale, "/dashboard")} labels={t.checkout.verify} compact />
+        )}
+
         {entitlements.length === 0 && (
           <div className="glass p-10 text-center">
             <p className="display text-2xl font-semibold">{t.dashboard.emptyTitle}</p>
@@ -101,8 +107,8 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                           {t.dashboard.details}
                         </Link>
                       </div>
-                      {raw.deliveryUrl && (
-                        <a href={raw.deliveryUrl} target="_blank" rel="noreferrer" className="btn btn-primary">
+                      {(raw.deliveryFile || raw.deliveryUrl) && (
+                        <a href={`/api/download/${raw.id}`} className="btn btn-primary">
                           {t.product.download}
                         </a>
                       )}

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { site } from "@/config/site";
 import { isLocale, localeMeta, locales } from "@/i18n/config";
 import { getDict } from "@/i18n/dictionaries";
+import { Analytics } from "@/components/analytics";
 import { Aurora } from "@/components/aurora";
 import { CursorGlow } from "@/components/cursor-glow";
 import { SiteFooter } from "@/components/site-footer";
@@ -54,6 +55,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={`${grotesk.variable} ${inter.variable} ${cairo.variable} ${mono.variable}`}
     >
       <body className="flex min-h-screen flex-col">
+        <Analytics />
         <Aurora />
         <CursorGlow />
         <SiteHeader locale={locale} />

@@ -1,5 +1,7 @@
 "use server";
 
+import { unlink } from "node:fs/promises";
+import path from "node:path";
 import { redirect } from "next/navigation";
 import { Prisma, prisma } from "@brand/db";
 import { assertAdmin } from "@/lib/admin";
@@ -20,6 +22,7 @@ import {
 } from "@/lib/admin-form";
 import { toEmbedUrl } from "@/lib/video";
 import { lp } from "@/i18n/config";
+import { isPrivateName, privateDir, safeDownloadName } from "@/lib/downloads";
 
 // Actions for the content editors: products, courses, testimonials and
 // subscribers. Every one starts with assertAdmin(), the same as actions.ts.
@@ -78,7 +81,10 @@ export async function saveProduct(fd: FormData) {
           const previewUrl = cleanUrl(str(fd, "previewUrl"));
           if (deliveryUrl === undefined) fail(here, "The download link isn't a valid web address.");
           if (previewUrl === undefined) fail(here, "The preview link isn't a valid web address.");
-          return { deliveryUrl, previewUrl };
+          const deliveryFile = str(fd, "deliveryFile");
+          if (deliveryFile && !isPrivateName(deliveryFile)) fail(here, "That uploaded file isn't valid. Please upload it again.");
+          const deliveryName = deliveryFile ? safeDownloadName(str(fd, "deliveryName"), "download") : null;
+          return { deliveryUrl, previewUrl, deliveryFile: deliveryFile || null, deliveryName };
         })()
       : {};
 
@@ -113,6 +119,12 @@ export async function saveProduct(fd: FormData) {
 
   if (existing) {
     await prisma.product.update({ where: { id: existing.id }, data });
+    // A replaced or removed template file is deleted from the server (unless another product uses it).
+    const old = existing.deliveryFile;
+    if (old && isPrivateName(old) && old !== (data as { deliveryFile?: string | null }).deliveryFile) {
+      const stillUsed = await prisma.product.count({ where: { deliveryFile: old } });
+      if (!stillUsed) await unlink(path.join(privateDir(), old)).catch(() => {});
+    }
     refresh();
     redirect(`${here}?saved=1`);
   }

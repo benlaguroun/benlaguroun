@@ -6,12 +6,14 @@ import { emailConfigured, esc, ownerEmail, sendEmail } from "@/lib/email";
 import { formatPrice } from "@/lib/format";
 import { providerLabel } from "@/lib/payments/labels";
 import { siteUrl } from "@/lib/site-url";
+import { LINK_DAYS, signedDownloadUrl } from "@/lib/downloads";
+import { reportError } from "@/lib/errors";
 
 // Email text lives here (not in the page dictionaries) because it is only used
 // on the server.
 const copy: Record<Locale, {
   subject: string; title: string; intro: string; order: string; date: string; method: string; amount: string;
-  openCourse: string; openLibrary: string; foot: string;
+  openCourse: string; openLibrary: string; download: string; linkNote: string; foot: string;
 }> = {
   en: {
     subject: "Your receipt: {name}",
@@ -19,6 +21,8 @@ const copy: Record<Locale, {
     intro: "Your payment went through and {name} is ready for you.",
     order: "Order", date: "Date", method: "Paid with", amount: "Amount",
     openCourse: "Start the course", openLibrary: "Open my library",
+    download: "Download your files",
+    linkNote: "This download link works for {days} days. After that, sign in and download from your library.",
     foot: "Questions about your order? Just reply to this email.",
   },
   fr: {
@@ -27,6 +31,8 @@ const copy: Record<Locale, {
     intro: "Votre paiement a bien été reçu et {name} est prêt pour vous.",
     order: "Commande", date: "Date", method: "Payé avec", amount: "Montant",
     openCourse: "Commencer la formation", openLibrary: "Ouvrir ma bibliothèque",
+    download: "Télécharger vos fichiers",
+    linkNote: "Ce lien de téléchargement est valable {days} jours. Ensuite, connectez-vous et téléchargez depuis votre bibliothèque.",
     foot: "Une question sur votre commande ? Répondez simplement à cet e-mail.",
   },
   ar: {
@@ -35,6 +41,8 @@ const copy: Record<Locale, {
     intro: "تمّت عملية الدفع بنجاح و{name} جاهز لك.",
     order: "الطلب", date: "التاريخ", method: "طريقة الدفع", amount: "المبلغ",
     openCourse: "ابدأ الدورة", openLibrary: "افتح مكتبتي",
+    download: "حمّل ملفاتك",
+    linkNote: "رابط التحميل هذا صالح لمدة {days} أيام. بعد ذلك، سجّل الدخول وحمّل من مكتبتك.",
     foot: "لديك سؤال عن طلبك؟ يكفي أن ترد على هذه الرسالة.",
   },
 };
@@ -44,22 +52,29 @@ const copy: Record<Locale, {
  * order, even if the webhook and the return page both fulfil it, and never
  * throws: a failed email must not break a payment.
  */
-export async function sendReceiptEmails(orderId: string) {
-  if (!emailConfigured()) return;
+export async function sendReceiptEmails(orderId: string, opts: { resend?: boolean } = {}): Promise<"sent" | "skipped" | "failed"> {
+  if (!emailConfigured()) return "skipped";
+  const resend = !!opts.resend;
 
-  // Claim the order first, so two simultaneous calls can't both send.
-  const claimed = await prisma.order.updateMany({
-    where: { id: orderId, status: "PAID", receiptSentAt: null },
-    data: { receiptSentAt: new Date() },
-  });
-  if (claimed.count !== 1) return;
+  // Claim the order first, so two simultaneous calls can't both send. A manual
+  // resend skips the claim (the admin asked for it) and doesn't notify you again.
+  if (resend) {
+    const paid = await prisma.order.count({ where: { id: orderId, status: "PAID" } });
+    if (!paid) return "skipped";
+  } else {
+    const claimed = await prisma.order.updateMany({
+      where: { id: orderId, status: "PAID", receiptSentAt: null },
+      data: { receiptSentAt: new Date() },
+    });
+    if (claimed.count !== 1) return "skipped";
+  }
 
   try {
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: { user: { select: { email: true, name: true } }, product: true },
     });
-    if (!order) return;
+    if (!order) return "skipped";
 
     const locale: Locale = isLocale(order.locale) ? order.locale : "en";
     const c = copy[locale];
@@ -69,7 +84,14 @@ export async function sendReceiptEmails(orderId: string) {
     const when = (order.paidAt ?? order.createdAt).toLocaleDateString(localeMeta[locale].intl, { dateStyle: "medium" });
     const method = providerLabel(order.provider);
     const isCourse = order.product.type === "COURSE";
-    const link = `${siteUrl}/${locale}${isCourse ? `/learn/${order.product.slug}` : "/dashboard"}`;
+    const hasFile = order.product.type === "TEMPLATE" && !!(order.product.deliveryFile || order.product.deliveryUrl);
+    const library = `${siteUrl}/${locale}/dashboard`;
+    // Templates get a signed link that works without signing in, for a week.
+    const link = hasFile
+      ? signedDownloadUrl(order.productId, order.userId)
+      : `${siteUrl}/${locale}${isCourse ? `/learn/${order.product.slug}` : "/dashboard"}`;
+    const buttonText = hasFile ? c.download : isCourse ? c.openCourse : c.openLibrary;
+    const linkNote = hasFile ? c.linkNote.replace("{days}", String(LINK_DAYS)) : "";
     const dir = localeMeta[locale].dir;
     const align = dir === "rtl" ? "right" : "left";
     const intro = c.intro.replace("{name}", product.name);
@@ -85,13 +107,19 @@ export async function sendReceiptEmails(orderId: string) {
 <table style="width:100%;border-collapse:collapse;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;margin-bottom:24px">
 ${row(c.order, ref)}${row(c.date, when)}${row(c.method, method)}${row(c.amount, price)}
 </table>
-<a href="${esc(link)}" style="display:inline-block;background:#6d28d9;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:600">${esc(isCourse ? c.openCourse : c.openLibrary)}</a>
+<a href="${esc(link)}" style="display:inline-block;background:#6d28d9;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:600">${esc(buttonText)}</a>
+${hasFile ? `<p style="margin:16px 0 0;font-size:13px;color:#64748b">${esc(linkNote)} <a href="${esc(library)}" style="color:#6d28d9">${esc(c.openLibrary)}</a></p>` : ""}
 <p style="margin:28px 0 0;font-size:13px;color:#64748b">${esc(c.foot)}</p>
 </div></body></html>`;
 
-    const text = `${c.title}\n\n${intro}\n\n${c.order}: ${ref}\n${c.date}: ${when}\n${c.method}: ${method}\n${c.amount}: ${price}\n\n${link}\n\n${c.foot}`;
+    const text = `${c.title}\n\n${intro}\n\n${c.order}: ${ref}\n${c.date}: ${when}\n${c.method}: ${method}\n${c.amount}: ${price}\n\n${buttonText}: ${link}${hasFile ? `\n${linkNote}\n${library}` : ""}\n\n${c.foot}`;
 
     await sendEmail({ to: order.user.email, subject: c.subject.replace("{name}", product.name), html, text, replyTo: ownerEmail(site.email) });
+
+    if (resend) {
+      await prisma.order.update({ where: { id: orderId }, data: { receiptSentAt: new Date() } });
+      return "sent";
+    }
 
     // You get a short note about every sale, in English.
     const note = `${order.product.name}\n${formatPrice(order.amountCents, order.currency, "en", "")} via ${method}\nBuyer: ${order.user.name} <${order.user.email}>\nOrder ${ref}`;
@@ -101,9 +129,13 @@ ${row(c.order, ref)}${row(c.date, when)}${row(c.method, method)}${row(c.amount, 
       html: `<pre style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6">${esc(note)}</pre>`,
       text: note,
     });
+    return "sent";
   } catch (err) {
     console.error("Could not send receipt email", err);
-    // Release the claim so a later webhook can try again.
-    await prisma.order.update({ where: { id: orderId }, data: { receiptSentAt: null } }).catch(() => {});
+    await reportError("email", err, `Receipt for order ${orderId}`);
+    // Release the claim so a later webhook can try again (not after a manual resend,
+    // where the original claim must stay).
+    if (!resend) await prisma.order.update({ where: { id: orderId }, data: { receiptSentAt: null } }).catch(() => {});
+    return "failed";
   }
 }

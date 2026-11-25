@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { deletePayment, setPaymentStatus } from "@/app/[locale]/admin/actions";
+import { refundStoreOrder, resendOrderReceipt } from "@/app/[locale]/admin/order-actions";
+import { ConfirmButton } from "./confirm-button";
 import { fmtDate, money } from "@/lib/admin-format";
 import type { PaymentRow } from "@/lib/admin-data";
 import { Pill, paymentTone } from "./ui";
@@ -67,6 +69,28 @@ export function PaymentTable({ rows, locale, returnTo }: { rows: PaymentRow[]; l
                 <Pill tone={paymentTone[r.status]}>{r.status.toLowerCase()}</Pill>
               </td>
               <td className="px-5 py-3.5">
+                {r.kind === "store" && (r.canRefund || r.canResend) && (
+                  <div className="flex flex-wrap justify-end gap-x-4 gap-y-1">
+                    {r.canResend && (
+                      <ActionButton action={resendOrderReceipt} id={r.id} returnTo={returnTo} locale={locale}>
+                        Resend receipt
+                      </ActionButton>
+                    )}
+                    {r.canRefund && (
+                      <form action={refundStoreOrder}>
+                        <input type="hidden" name="id" value={r.id} />
+                        <input type="hidden" name="returnTo" value={returnTo} />
+                        <input type="hidden" name="locale" value={locale} />
+                        <ConfirmButton
+                          className="text-xs font-medium text-rose hover:underline"
+                          message={`Refund ${money(r.amountCents, r.currency)} to ${r.who}? The money goes back through the payment provider and their access is removed. This cannot be undone.`}
+                        >
+                          Refund
+                        </ConfirmButton>
+                      </form>
+                    )}
+                  </div>
+                )}
                 {r.editable && (
                   <div className="flex flex-wrap justify-end gap-x-4 gap-y-1">
                     {r.status !== "PAID" && (

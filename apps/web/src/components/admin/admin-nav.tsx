@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const items = [
+type Badge = "messages" | "errors";
+
+const items: { href: string; label: string; exact?: boolean; badge?: Badge }[] = [
   { href: "/admin", label: "Overview", exact: true },
-  { href: "/admin/messages", label: "Messages", badge: true },
+  { href: "/admin/analytics", label: "Analytics" },
+  { href: "/admin/messages", label: "Messages", badge: "messages" },
   { href: "/admin/clients", label: "Clients" },
   { href: "/admin/payments", label: "Payments" },
   { href: "/admin/products", label: "Products" },
@@ -13,16 +16,19 @@ const items = [
   { href: "/admin/posts", label: "Blog" },
   { href: "/admin/testimonials", label: "Testimonials" },
   { href: "/admin/subscribers", label: "Subscribers" },
+  { href: "/admin/errors", label: "Errors", badge: "errors" },
 ];
 
-export function AdminNav({ locale, newMessages }: { locale: string; newMessages: number }) {
+export function AdminNav({ locale, newMessages, openErrors }: { locale: string; newMessages: number; openErrors: number }) {
   const pathname = usePathname() ?? "";
+  const counts: Record<Badge, number> = { messages: newMessages, errors: openErrors };
 
   return (
     <nav aria-label="Admin" className="glass flex gap-1 overflow-x-auto p-2 lg:flex-col">
       {items.map((item) => {
         const href = `/${locale}${item.href}`;
         const active = item.exact ? pathname === href : pathname.startsWith(href);
+        const count = item.badge ? counts[item.badge] : 0;
         return (
           <Link
             key={item.href}
@@ -33,8 +39,12 @@ export function AdminNav({ locale, newMessages }: { locale: string; newMessages:
             }`}
           >
             {item.label}
-            {item.badge && newMessages > 0 && (
-              <span className="rounded-full bg-aqua px-2 py-0.5 font-mono text-[0.65rem] font-bold text-void">{newMessages}</span>
+            {count > 0 && (
+              <span
+                className={`rounded-full px-2 py-0.5 font-mono text-[0.65rem] font-bold text-void ${item.badge === "errors" ? "bg-rose" : "bg-aqua"}`}
+              >
+                {count}
+              </span>
             )}
           </Link>
         );

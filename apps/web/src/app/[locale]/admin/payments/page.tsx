@@ -15,7 +15,7 @@ const STATUSES = ["PENDING", "PAID", "REFUNDED"] as const;
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ view?: string; status?: string; error?: string }>;
+  searchParams: Promise<{ view?: string; status?: string; error?: string; notice?: string }>;
 };
 
 export default async function PaymentsPage({ params, searchParams }: Props) {
@@ -47,6 +47,11 @@ export default async function PaymentsPage({ params, searchParams }: Props) {
     <>
       <AdminHeading title="Payments" />
       <ErrorBanner message={sp.error} />
+      {sp.notice && (
+        <p role="status" className="mb-5 rounded-xl border border-aqua/30 bg-aqua/10 px-4 py-3 text-sm text-aqua">
+          {sp.notice}
+        </p>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Store sales" value={money(paidStore._sum.amountCents ?? 0)} hint="Paid orders from the website" />

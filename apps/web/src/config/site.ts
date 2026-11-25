@@ -8,7 +8,7 @@ export const site = {
   legal: {
     country: "Morocco",
     refundDays: 14, // how long buyers have to ask for a refund on templates and courses
-    updated: "2026-11-24", // change this date whenever you edit the legal text
+    updated: "2026-11-25", // change this date whenever you edit the legal text
   },
 
   // Social profiles. Links with an empty href are hidden automatically, so
