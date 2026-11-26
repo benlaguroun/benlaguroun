@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@brand/db";
+import { site } from "@/config/site";
 import { lp } from "@/i18n/config";
 import { localize } from "@/i18n/content";
 import { getDict } from "@/i18n/dictionaries";
@@ -38,6 +39,7 @@ export default async function ServicePage({ params }: Props) {
   const raw = await getService(slug);
   if (!raw) notFound();
   const service = localize(raw, locale);
+  const bookingUrl = site.booking.url;
 
   return (
     <div className="wrap grid gap-12 py-14 lg:grid-cols-[1.6fr_1fr]">
@@ -77,6 +79,14 @@ export default async function ServicePage({ params }: Props) {
           <Link href={`${lp(locale, "/contact")}?service=${service.slug}`} className="btn btn-primary w-full">
             {t.product.startProject}
           </Link>
+          {bookingUrl && (
+            <div className="space-y-2">
+              <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className="btn btn-glass w-full">
+                {t.product.bookCall}
+              </a>
+              <p className="text-center text-xs text-mute">{t.product.bookNote}</p>
+            </div>
+          )}
           <ul className="space-y-3 border-t border-line pt-6 text-sm">
             {service.features.map((f) => (
               <li key={f} className="flex gap-3">

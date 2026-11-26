@@ -119,7 +119,13 @@ export const defs: Def[] = [
 
   // Phase 1
   { key: "packages", phase: "p1", kind: "business", title: "Write the service packages and the care plan", href: "/admin/products", why: "Fixed scope, price, timeline and deposit for each. Packages sell better than hourly work. Written in SERVICES.md; load them with npm run db:services, then adjust prices in Products." },
-  { key: "booking", phase: "p1", kind: "code", title: "Add a booking link (Calendly or Cal.com) to services and contact", why: "Many serious clients prefer picking a time over filling a form." },
+  { key: "booking", phase: "p1", kind: "code", title: "Add a booking link (Calendly or Cal.com) to services and contact",
+    why: "Many serious clients prefer picking a time over filling a form. Paste your link into site.booking.url in config/site.ts.",
+    auto: () => {
+      const url = site.booking.url;
+      return { done: /^https:\/\//.test(url), detail: url ? "Link set" : "No link yet" };
+    },
+  },
   {
     key: "portfolio", phase: "p1", kind: "business", title: "Show 3 real projects with results", href: "/admin/projects",
     why: "Proof beats promises. Say the problem, what you built and the result.",

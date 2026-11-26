@@ -48,6 +48,20 @@ export default async function ContactPage({ params, searchParams }: Props) {
         body={fill(t.pages.contact.body, { email: site.email })}
       />
       <div className="wrap max-w-2xl py-14">
+        {site.booking.url && (
+          <Reveal>
+            <div className="glass mb-10 flex flex-col gap-5 p-7 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="display text-xl font-semibold">{t.pages.contact.bookTitle}</h2>
+                <p className="mt-1 text-mute">{t.pages.contact.bookBody}</p>
+              </div>
+              <a href={site.booking.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary shrink-0">
+                {t.pages.contact.bookCta}
+              </a>
+            </div>
+            <p className="mb-6 text-center text-sm text-mute">{t.pages.contact.orForm}</p>
+          </Reveal>
+        )}
         <Reveal>
           <ContactForm services={services} defaultInterest={service} defaultMessage={defaultMessage} t={t.contactForm} />
         </Reveal>

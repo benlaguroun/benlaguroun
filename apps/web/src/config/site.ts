@@ -1,8 +1,8 @@
 // One place to define your brand. Edit this file first.
 export const site = {
-  name: "Mohamed BenLaguroun",
-  email: "benlaguroun@gmail.com",
-  founder: "BenLaguroun",
+  name: "Ben Laguroun",
+  email: "hello@example.com",
+  founder: "Ben Laguroun",
 
   // Your company, once it exists. Leave legalName empty to trade under your own
   // name for now: the legal pages, footer, receipts and newsletter then use the
@@ -25,13 +25,19 @@ export const site = {
     updated: "2026-11-25", // change this date whenever you edit the legal text
   },
 
+  // Booking page (Cal.com or Calendly). Paste your full link to show a "Book a free
+  // call" button on every service page and on the contact page. Empty = hidden.
+  booking: {
+    url: "https://cal.com/mohamed-benlaguroun-ja2mzu/30min", // e.g. https://cal.com//30min
+  },
+
   // Social profiles. Links with an empty href are hidden automatically, so
   // paste your full profile URLs here to switch them on everywhere
   // (hero, About page and footer).
   social: [
     { key: "github", label: "GitHub", href: "https://github.com/benlaguroun" },
-    { key: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/mohamed-benlaguroun/" }, // e.g. https://www.linkedin.com/in/your-handle
-    { key: "facebook", label: "Facebook", href: "https://www.facebook.com/ben.moha.5074/" }, // e.g. https://www.facebook.com/your.page
+    { key: "linkedin", label: "LinkedIn", href: "" }, // e.g. https://www.linkedin.com/in/your-handle
+    { key: "facebook", label: "Facebook", href: "" }, // e.g. https://www.facebook.com/your.page
   ],
 
   // Technologies shown in the scrolling strip and on the About page.
