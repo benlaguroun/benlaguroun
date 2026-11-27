@@ -12,8 +12,8 @@ type Props = { product: Product; locale: Locale; signedIn: boolean; owned: boole
 export function PurchasePanel({ product, locale, signedIn, owned }: Props) {
   const t = getDict(locale);
   const price = formatPrice(product.priceCents, product.currency, locale, t.product.customQuote);
-  // No payment method set up yet: show "coming soon" with an email form instead of a buy button.
-  const canBuy = availableProviders(product.currency).length > 0;
+  // Not for sale yet (flagged coming soon, or no payment method set up): email form instead of a buy button.
+  const canBuy = !product.comingSoon && availableProviders(product.currency).length > 0;
 
   return (
     <aside className="glass sticky top-24 h-fit space-y-6 p-7">

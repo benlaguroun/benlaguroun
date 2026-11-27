@@ -110,6 +110,7 @@ model Product {
   deliveryName String?    // templates: the original file name buyers see when they download it
   previewUrl  String?     // templates: live demo
   published   Boolean     @default(true)
+  comingSoon  Boolean     @default(false) // visible, but not for sale: shows an email sign-up instead of a buy button
   featured    Boolean     @default(false)
   position    Int         @default(0)
   createdAt   DateTime    @default(now())

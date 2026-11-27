@@ -51,7 +51,7 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
   };
   const methods = availableProviders(raw.currency).map((p) => labels[p.name]!);
   // Nothing can be charged yet (no payment keys): the product page shows "coming soon" instead.
-  if (methods.length === 0) redirect(lp(locale, productPath(raw)));
+  if (methods.length === 0 || raw.comingSoon) redirect(lp(locale, productPath(raw)));
   const unverified = needsVerification(session.user as { emailVerified?: boolean; role?: string });
   // Better Auth sends people back here with ?error=invalid_token when a confirmation link is bad or old.
   const linkError = !!error && /token/i.test(error);

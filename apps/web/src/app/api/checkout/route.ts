@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   if (!body.productId) return fail("invalid", 400);
 
   const product = await prisma.product.findUnique({ where: { id: body.productId } });
-  if (!product || !product.published || product.type === "SERVICE" || product.priceCents == null) {
+  if (!product || !product.published || product.comingSoon || product.type === "SERVICE" || product.priceCents == null) {
     return fail("invalid", 400);
   }
 

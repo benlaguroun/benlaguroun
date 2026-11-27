@@ -33,6 +33,8 @@ This is the step that makes links in emails, the sitemap and sign-in work for re
 
 **Keep the Mac reliable.** Never sleep while plugged in, `pm2 startup` + `pm2 save` done, `cloudflared` installed as a service (config in `/etc/cloudflared/`), and a free uptime monitor on `/api/health`.
 
+**Your catalog.** `npm run db:catalog` adds 12 templates and 6 courses as "Coming soon" products (visible with an email sign-up, impossible to buy). When you finish one, open it in Admin -> Products, upload the file or add the lessons, untick "Coming soon", and save. Admin -> Subscribers shows which product each person asked about, so build the ones with the most sign-ups first.
+
 **Look professional while the Mac is off.** Add the Cloudflare Worker in `deploy/worker/` (guide in its README, about 10 minutes, free). Saved copies of public pages stay readable, and everything else shows a friendly "Back shortly" page instead of Cloudflare's error 1033. `./deploy/deploy.sh` refreshes the copies after each deploy.
 
 **Move before you take a client who depends on it every day, or before you open the shop and sell. Two options:**

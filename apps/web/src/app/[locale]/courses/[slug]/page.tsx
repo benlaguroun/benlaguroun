@@ -80,7 +80,8 @@ export default async function CoursePage({ params }: Props) {
             <ArrowBack /> {t.product.allCourses}
           </Link>
           <p className="eyebrow mt-8">
-            {t.product.types.COURSE} · {lessonCount} {t.product.lessons}
+            {t.product.types.COURSE}
+            {lessonCount > 0 && ` · ${lessonCount} ${t.product.lessons}`}
           </p>
           <h1 className="display mt-3 text-4xl font-semibold sm:text-6xl">
             <span className="text-gradient">{product.name}</span>
@@ -90,7 +91,7 @@ export default async function CoursePage({ params }: Props) {
             {paragraphs(product.description).map((para, i) => <p key={i}>{para}</p>)}
           </div>
 
-          <h2 className="display mt-14 text-2xl font-semibold">{t.product.whatsInside}</h2>
+          {modules.length > 0 && <h2 className="display mt-14 text-2xl font-semibold">{t.product.whatsInside}</h2>}
           <div className="mt-6 space-y-4">
             {modules.map((m, mi) => (
               <section key={m.id} className="glass overflow-hidden">

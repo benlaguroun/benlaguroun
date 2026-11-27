@@ -110,6 +110,7 @@ type ProductLike = {
   priceCents: number | null;
   currency: string;
   imageUrl: string | null;
+  comingSoon?: boolean;
 };
 
 /** Structured data for a service, template or course page. */
@@ -122,7 +123,7 @@ export function productJsonLd(kind: "Service" | "Product" | "Course", p: Product
           url,
           price: (p.priceCents / 100).toFixed(2),
           priceCurrency: p.currency.toUpperCase(),
-          availability: "https://schema.org/InStock",
+          availability: p.comingSoon ? "https://schema.org/PreSale" : "https://schema.org/InStock",
         }
       : undefined;
 

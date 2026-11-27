@@ -234,9 +234,9 @@ export async function loadRoadmap() {
   const demo = { slug: { in: demoSlugs } };
   const [publishedReal, publishedDemo, publishedTemplates, projects, testimonials, posts, subscribers, activeClients, paidOrders, agentTasks, agentSent] =
     await Promise.all([
-      prisma.product.count({ where: { published: true, NOT: demo } }),
+      prisma.product.count({ where: { published: true, comingSoon: false, NOT: demo } }),
       prisma.product.count({ where: { published: true, ...demo } }),
-      prisma.product.count({ where: { published: true, type: "TEMPLATE", NOT: demo } }),
+      prisma.product.count({ where: { published: true, comingSoon: false, type: "TEMPLATE", NOT: demo } }),
       // Only projects that tell what happened count: they carry a "Result:" paragraph.
       prisma.project.count({ where: { body: { contains: "Result:" } } }),
       prisma.testimonial.count({ where: { published: true } }),

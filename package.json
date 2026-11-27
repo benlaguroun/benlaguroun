@@ -16,6 +16,7 @@
     "db:seed": "npm run seed -w @brand/db",
     "db:services": "npm run services -w @brand/db",
     "db:results": "npm run results -w @brand/db",
+    "db:catalog": "npm run catalog -w @brand/db",
     "db:admin": "npm run admin -w @brand/db --"
   },
   "devDependencies": {

@@ -129,6 +129,10 @@ export function ProductForm({
           Published (visible on the site)
         </label>
         <label className="flex items-center gap-2.5 text-sm">
+          <input type="checkbox" name="comingSoon" defaultChecked={product?.comingSoon ?? false} className="h-4 w-4 accent-[var(--color-aqua)]" />
+          Coming soon (visible, but not for sale yet)
+        </label>
+        <label className="flex items-center gap-2.5 text-sm">
           <input type="checkbox" name="featured" defaultChecked={product?.featured ?? false} className="h-4 w-4 accent-[var(--color-aqua)]" />
           Featured
         </label>

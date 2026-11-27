@@ -111,6 +111,7 @@ export async function saveProduct(fd: FormData) {
     imageUrl,
     features: lines(str(fd, "features"), 12),
     published: checked(fd, "published"),
+    comingSoon: checked(fd, "comingSoon"),
     featured: checked(fd, "featured"),
     position,
     translations: asJson(translations),
