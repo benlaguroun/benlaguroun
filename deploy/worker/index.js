@@ -24,6 +24,9 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // Self-check: https://yourdomain/__offline/check?path=/en tells you if a copy is saved.
+    if (url.pathname === "/__offline/check") return checkCopy(url);
+
     let response = null;
     try {
       response = await fetch(request, { signal: AbortSignal.timeout(TIMEOUT_MS) });
@@ -79,13 +82,40 @@ function cacheKey(url) {
   return new Request(`${url.origin}${url.pathname}${url.search}`, { method: "GET" });
 }
 
+const ERROR_KEY = new Request("https://offline.invalid/last-error", { method: "GET" });
+
 async function save(cache, key, response, ttl) {
-  const headers = new Headers(response.headers);
-  headers.delete("set-cookie");
-  headers.delete("content-encoding");
-  headers.delete("content-length");
-  headers.set("cache-control", `public, max-age=${ttl}`);
-  await cache.put(key, new Response(response.body, { status: 200, headers }));
+  try {
+    const headers = new Headers(response.headers);
+    // Headers that stop Cloudflare's cache from storing or matching the copy.
+    for (const name of ["set-cookie", "content-encoding", "content-length", "transfer-encoding", "vary", "etag", "last-modified", "age"]) {
+      headers.delete(name);
+    }
+    headers.set("cache-control", `public, max-age=${ttl}`);
+    headers.set("x-offline-saved-at", new Date().toISOString());
+    await cache.put(key, new Response(response.body, { status: 200, headers }));
+  } catch (error) {
+    // Remember why saving failed, so /__offline/check can show it.
+    const message = `${new Date().toISOString()} ${key.url} ${error && error.message ? error.message : error}`;
+    await cache.put(ERROR_KEY, new Response(message, { headers: { "cache-control": "public, max-age=86400" } }));
+  }
+}
+
+async function checkCopy(url) {
+  const cache = caches.default;
+  const path = url.searchParams.get("path") || "/en";
+  const target = new URL(path, url.origin);
+  const copy = await cache.match(cacheKey(target));
+  const failure = await cache.match(ERROR_KEY);
+  const body = {
+    path: `${target.pathname}${target.search}`,
+    saved: Boolean(copy),
+    savedAt: copy ? copy.headers.get("x-offline-saved-at") : null,
+    lastSaveError: failure ? await failure.text() : null,
+  };
+  return new Response(JSON.stringify(body, null, 2), {
+    headers: { "content-type": "application/json", "cache-control": "no-store", "x-robots-tag": "noindex" },
+  });
 }
 
 const text = {

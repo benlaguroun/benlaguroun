@@ -37,6 +37,14 @@ pm2 start brand-web                                   # put the site back
 
 With the app stopped you should see `HTTP/2 200` and `x-served-from: offline-copy` for the page, and the "Back shortly" page for `/en/admin`. Also open the site in a browser while the app is stopped and check that the page shows with its styles and images.
 
+## If a page is not served from the saved copy
+
+Open `https://benlaguroun.com/__offline/check?path=/en` in a browser (change `/en` to any page). It shows `"saved": true` with the time it was saved, or `"saved": false` and the last error the Worker hit while saving.
+
+- `saved: false` and no error: the page was never visited through the Worker. Run `bash deploy/warm.sh`, check again. If it stays false, check that the two routes are on the Worker, and that you are testing the same address you warmed (`https://benlaguroun.com`, not `www`).
+- `saved: false` with an error: send me the error text.
+- `saved: true` but the page is not served while the app is stopped: test from the same network as the warm-up, because copies are kept per Cloudflare location.
+
 ## What to know
 
 - **Copies are kept per Cloudflare location.** `warm.sh` fills the location nearest to your Mac, which is also the one nearest to most of your visitors. A page that nobody in a location has loaded since the last deploy may not be saved there. Then they see the "Back shortly" page. Run `bash deploy/warm.sh` after you publish a post or project.
