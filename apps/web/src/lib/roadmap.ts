@@ -144,8 +144,8 @@ export const defs: Def[] = [
   },
 
   // Phase 2
-  { key: "tests", phase: "p2", kind: "code", title: "Automated tests for checkout, webhooks, refunds and downloads, run by CI on every push", why: "Your biggest technical risk: one bad edit could silently stop receipts or leak a paid file." },
-  { key: "headers", phase: "p2", kind: "code", title: "Security headers (CSP, frame, referrer, HSTS)", why: "Cheap to add, and some buyers' scanners look for them." },
+  { key: "tests", phase: "p2", kind: "code", title: "Automated tests for checkout, webhooks, refunds and downloads, run by CI on every push", why: "Built: run npm test (62 tests, no database needed); .github/workflows/ci.yml runs them and the type check on every push. Tick this once the first run on GitHub shows a green check." },
+  { key: "headers", phase: "p2", kind: "code", title: "Security headers (CSP, frame, referrer, HSTS)", why: "Built in next.config.ts for the live site. After deploying, check https://securityheaders.com for your address, then tick this." },
   { key: "deploy", phase: "p2", kind: "code", title: "Dockerfile and compose file, with a one-command deploy", why: "So a deploy is a script, not steps in your head." },
   { key: "backups", phase: "p2", kind: "setup", title: "Nightly backups of the database and uploads (including uploads/private), with a tested restore", why: "If the disk dies, the paid files and the customer list die with it." },
   { key: "live-check", phase: "p2", kind: "setup", title: "Open Admin → Live check and fix everything marked Problem", href: "/admin/health", after: ["domain"], why: "The site tests its own public address, the database, email and payments, and tells you the fix for each problem. Run it after every deploy." },
@@ -160,14 +160,14 @@ export const defs: Def[] = [
     auto: (c) => ({ done: c.publishedTemplates >= 1, detail: `${c.publishedTemplates} published` }),
   },
   { key: "free-template", phase: "p3", kind: "business", title: "Add a free template behind the newsletter signup", why: "Gives people a reason to join your list." },
-  { key: "og-images", phase: "p3", kind: "code", title: "Open Graph preview images for products and posts", why: "Shares on LinkedIn and WhatsApp look bare without them." },
-  { key: "coupons", phase: "p3", kind: "code", title: "Coupons and bundles", why: "Needed for a launch discount and for selling templates as a pack." },
+  { key: "og-images", phase: "p3", kind: "code", title: "Open Graph preview images for products and posts", why: "Built: every product and post now has its own share picture with its title and price. Paste a product link into the LinkedIn Post Inspector to check it, then tick this." },
+  { key: "coupons", phase: "p3", kind: "code", title: "Coupons and bundles", href: "/admin/coupons", why: "Coupons are built: percentage or fixed codes with a limit, an end date and an optional single product, in Admin → Coupons. A 100% code gives a product away free. Bundles are not built yet. Tick this once you have created your first code." },
   { key: "template-launch", phase: "p3", kind: "business", title: "Launch the first template to your list and three communities", why: "Write about how you built it rather than just advertising it." },
 
   // Phase 4
   {
     key: "posts", phase: "p4", kind: "business", title: "Publish your first 4 posts", href: "/admin/posts/new",
-    why: "One useful post a week, aimed at your audience, each linking to a template or service.",
+    why: "One useful post a week, aimed at your audience, each linking to a template or service. Eleven drafts are ready (schools, pricing, attendance privacy, AI assistant, build or buy, how I work, hosting, hotels, clinics, Arabic RTL, multi-tenant): run npm run db:posts, read them in Admin → Blog, correct anything untrue, then publish.",
     auto: (c) => ({ done: c.posts >= 4, detail: `${c.posts} of 4 published` }),
   },
   {

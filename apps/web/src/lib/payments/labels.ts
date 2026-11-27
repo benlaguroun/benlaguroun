@@ -3,6 +3,8 @@ export function providerLabel(name: string) {
   switch (name) {
     case "paypal":
       return "PayPal";
+    case "free":
+      return "Free (coupon)";
     default:
       return "Stripe";
   }

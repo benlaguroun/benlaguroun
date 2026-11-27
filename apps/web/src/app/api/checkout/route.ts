@@ -6,8 +6,10 @@ import { site } from "@/lib/site-url";
 import { defaultLocale, isLocale, lp } from "@/i18n/config";
 import { reportError } from "@/lib/errors";
 import { needsVerification } from "@/lib/verification";
+import { findCouponOffer } from "@/lib/coupons-db";
+import { fulfillOrder } from "@/lib/orders";
 
-type Code = "signin" | "invalid" | "failed" | "method" | "verify";
+type Code = "signin" | "invalid" | "failed" | "method" | "verify" | "coupon";
 
 const fail = (code: Code, status: number) => NextResponse.json({ code }, { status });
 
@@ -16,7 +18,7 @@ export async function POST(req: Request) {
   if (!session) return fail("signin", 401);
   if (needsVerification(session.user as { emailVerified?: boolean; role?: string })) return fail("verify", 403);
 
-  const body = (await req.json().catch(() => ({}))) as { productId?: string; locale?: string; provider?: string };
+  const body = (await req.json().catch(() => ({}))) as { productId?: string; locale?: string; provider?: string; coupon?: string };
   const locale = isLocale(body.locale) ? body.locale : defaultLocale;
   if (!body.productId) return fail("invalid", 400);
 
@@ -25,25 +27,48 @@ export async function POST(req: Request) {
     return fail("invalid", 400);
   }
 
-  // The buyer's choice, or the only method on offer.
-  const methods = availableProviders(product.currency);
-  const provider = body.provider ? getProvider(body.provider, product.currency) : methods.length === 1 ? methods[0] : null;
-  if (!provider) return fail("method", 400);
-
   const already = await prisma.entitlement.findUnique({
     where: { userId_productId: { userId: session.user.id, productId: product.id } },
   });
   if (already) return NextResponse.json({ url: `${site.url}${lp(locale, "/dashboard")}` });
 
-  // The price always comes from the database, never from the browser.
+  // The price always comes from the database, never from the browser. A coupon is
+  // checked again here, whatever the checkout box showed.
+  let amountCents = product.priceCents;
+  let couponCode: string | null = null;
+  let discountCents = 0;
+  if (typeof body.coupon === "string" && body.coupon.trim()) {
+    const offer = await findCouponOffer(body.coupon, { id: product.id, priceCents: product.priceCents });
+    if (!offer.ok) return fail("coupon", 400);
+    amountCents = offer.finalCents;
+    couponCode = offer.code;
+    discountCents = offer.discountCents;
+  }
+
+  // A code that makes it free needs no payment provider at all.
+  if (amountCents === 0) {
+    const order = await prisma.order.create({
+      data: { userId: session.user.id, productId: product.id, amountCents: 0, currency: product.currency, provider: "free", locale, couponCode, discountCents },
+    });
+    await fulfillOrder(order.id);
+    return NextResponse.json({ url: `${site.url}${lp(locale, "/checkout/success")}?order=${order.id}` });
+  }
+
+  // The buyer's choice, or the only method on offer.
+  const methods = availableProviders(product.currency);
+  const provider = body.provider ? getProvider(body.provider, product.currency) : methods.length === 1 ? methods[0] : null;
+  if (!provider) return fail("method", 400);
+
   const order = await prisma.order.create({
     data: {
       userId: session.user.id,
       productId: product.id,
-      amountCents: product.priceCents,
+      amountCents,
       currency: product.currency,
       provider: provider.name,
       locale,
+      couponCode,
+      discountCents,
     },
   });
 
@@ -54,9 +79,10 @@ export async function POST(req: Request) {
       product: {
         name: product.name,
         description: product.tagline,
-        priceCents: product.priceCents,
+        priceCents: amountCents,
         currency: product.currency,
-        stripePriceId: product.stripePriceId,
+        // A saved Stripe price has a fixed amount, so it cannot be used with a discount.
+        stripePriceId: couponCode ? null : product.stripePriceId,
       },
       customer: { email: session.user.email, name: session.user.name },
       successUrl: `${site.url}${lp(locale, "/checkout/success")}?order=${order.id}`,

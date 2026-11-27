@@ -14,6 +14,7 @@ const items: { href: string; label: string; exact?: boolean; badge?: Badge }[] =
   { href: "/admin/clients", label: "Clients" },
   { href: "/admin/payments", label: "Payments" },
   { href: "/admin/products", label: "Products" },
+  { href: "/admin/coupons", label: "Coupons" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/posts", label: "Blog" },
   { href: "/admin/testimonials", label: "Testimonials" },

@@ -140,8 +140,10 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
                   locale={locale}
                   methods={methods}
                   payLabel={fill(c.pay, { price })}
+                  payTemplate={c.pay}
                   processing={c.processing}
                   secureNote={c.secure}
+                  coupon={c.coupon}
                   errors={t.errors}
                 />
               )}

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { Prisma, prisma } from "@brand/db";
 import { assertAdmin } from "@/lib/admin";
 import { parseAmount } from "@/lib/admin-format";
+import { normalizeCode } from "@/lib/coupons";
 import {
   buildTranslations,
   checked,
@@ -382,4 +383,72 @@ export async function deleteSubscriber(fd: FormData) {
   await prisma.subscriber.delete({ where: { id: str(fd, "id") } });
   refresh();
   redirect(lp(localeOf(fd), "/admin/subscribers"));
+}
+
+// ------------------------------------------------------------------ coupons
+
+export async function saveCoupon(fd: FormData) {
+  await assertAdmin();
+  const locale = localeOf(fd);
+  const here = lp(locale, "/admin/coupons");
+  const id = str(fd, "id");
+
+  const code = normalizeCode(str(fd, "code"));
+  if (!code) fail(here, "The code needs 2 to 32 letters, numbers, dashes or underscores, for example LAUNCH20.");
+
+  const taken = await prisma.coupon.findUnique({ where: { code }, select: { id: true } });
+  if (taken && taken.id !== id) fail(here, "Another coupon already uses that code.");
+
+  const kind = str(fd, "kind");
+  let percentOff: number | null = null;
+  let amountOffCents: number | null = null;
+  if (kind === "amount") {
+    amountOffCents = parseAmount(str(fd, "amount"));
+    if (!amountOffCents) fail(here, "Enter the amount to take off, for example 10 or 25.50.");
+  } else {
+    percentOff = int(fd, "percent", 0);
+    if (percentOff < 1 || percentOff > 100) fail(here, "The percentage must be between 1 and 100.");
+  }
+
+  const maxRaw = str(fd, "maxRedemptions");
+  const maxRedemptions = maxRaw ? int(fd, "maxRedemptions", 0) : null;
+  if (maxRedemptions !== null && maxRedemptions < 1) fail(here, "The limit must be 1 or more, or left empty for unlimited.");
+
+  // The last day the code works, counted until the end of that day.
+  const expiresRaw = str(fd, "expiresAt");
+  let expiresAt: Date | null = null;
+  if (expiresRaw) {
+    expiresAt = new Date(`${expiresRaw}T23:59:59Z`);
+    if (Number.isNaN(expiresAt.getTime())) fail(here, "That date doesn't look right.");
+  }
+
+  const productId = optional(fd, "productId");
+  if (productId && !(await prisma.product.findUnique({ where: { id: productId }, select: { id: true } }))) {
+    fail(here, "That product no longer exists.");
+  }
+
+  const data = { code, note: optional(fd, "note"), percentOff, amountOffCents, productId, maxRedemptions, expiresAt, active: checked(fd, "active") };
+  if (id) {
+    if (!(await prisma.coupon.findUnique({ where: { id }, select: { id: true } }))) fail(here, "That coupon no longer exists.");
+    await prisma.coupon.update({ where: { id }, data });
+  } else {
+    await prisma.coupon.create({ data });
+  }
+  refresh();
+  redirect(`${here}?saved=1`);
+}
+
+export async function setCouponActive(fd: FormData) {
+  await assertAdmin();
+  await prisma.coupon.update({ where: { id: str(fd, "id") }, data: { active: str(fd, "active") === "1" } });
+  refresh();
+  redirect(lp(localeOf(fd), "/admin/coupons"));
+}
+
+export async function deleteCoupon(fd: FormData) {
+  await assertAdmin();
+  // Orders keep the code as text, so past receipts and reports are not affected.
+  await prisma.coupon.deleteMany({ where: { id: str(fd, "id") } });
+  refresh();
+  redirect(lp(localeOf(fd), "/admin/coupons"));
 }

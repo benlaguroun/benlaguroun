@@ -201,10 +201,28 @@ model Order {
   createdAt   DateTime    @default(now())
   paidAt      DateTime?
   receiptSentAt DateTime? // set once the receipt email has gone out
+  couponCode    String?   // the coupon used, if any; amountCents is already the discounted price
+  discountCents Int       @default(0)
 
   entitlement Entitlement?
 
   @@index([userId])
+}
+
+// A discount code. Give it a percentage or a fixed amount. Leave "product" empty
+// for a code that works on everything. How many times it was used is counted from
+// paid orders, so a refund does not use up a code.
+model Coupon {
+  id             String    @id @default(cuid())
+  code           String    @unique // always stored in capitals
+  note           String?   // for you only: "Launch week", "Newsletter subscribers"...
+  percentOff     Int?      // 1 to 100
+  amountOffCents Int?      // fixed amount, in the product's currency
+  productId      String?   // null = any product
+  maxRedemptions Int?      // null = unlimited
+  expiresAt      DateTime? // null = never
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
 }
 
 // An entitlement = "this user owns this product". Courses and template

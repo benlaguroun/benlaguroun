@@ -17,7 +17,9 @@
     "db:services": "npm run services -w @brand/db",
     "db:results": "npm run results -w @brand/db",
     "db:catalog": "npm run catalog -w @brand/db",
-    "db:admin": "npm run admin -w @brand/db --"
+    "db:posts": "npm run posts -w @brand/db",
+    "db:admin": "npm run admin -w @brand/db --",
+    "test": "npm test -w web"
   },
   "devDependencies": {
     "turbo": "^2.11.13",

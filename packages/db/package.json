@@ -12,6 +12,7 @@
     "services": "tsx prisma/service-packages.ts",
     "results": "tsx prisma/project-results.ts",
     "catalog": "tsx prisma/catalog.ts",
+    "posts": "tsx prisma/posts.ts",
     "typecheck": "tsc --noEmit",
     "admin": "tsx prisma/make-admin.ts"
   },
