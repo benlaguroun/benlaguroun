@@ -25,10 +25,18 @@ export const site = {
     updated: "2026-11-25", // change this date whenever you edit the legal text
   },
 
+  // The shop (templates and courses). Keep it closed until your company and payments
+  // are ready: while closed, the menu, footer, home page, sitemap and dashboard hide
+  // templates and courses and their pages return "not found". Services, the portfolio,
+  // the blog and the contact page stay live. Set open to true when you can take payments.
+  shop: {
+    open: false as boolean,
+  },
+
   // Booking page (Cal.com or Calendly). Paste your full link to show a "Book a free
   // call" button on every service page and on the contact page. Empty = hidden.
   booking: {
-    url: "https://cal.com/mohamed-benlaguroun-ja2mzu/30min", // e.g. https://cal.com//30min
+    url: "" as string, // e.g. https://cal.com/your-handle/30min
   },
 
   // Social profiles. Links with an empty href are hidden automatically, so
@@ -65,6 +73,11 @@ export const site = {
 } as const;
 
 export type SocialKey = (typeof site.social)[number]["key"];
+
+/** Menu links, without the shop pages while the shop is closed. */
+export function navItems() {
+  return site.nav.filter((n) => site.shop.open || (n.key !== "templates" && n.key !== "courses"));
+}
 
 /** Only the profiles that have a link set. */
 export function activeSocial() {

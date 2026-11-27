@@ -173,7 +173,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* ───────────── Courses ───────────── */}
-      {courses.length > 0 && (
+      {site.shop.open && courses.length > 0 && (
         <section className="wrap pt-28">
           <SectionHeading
             {...t.sections.courses}
@@ -191,7 +191,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       )}
 
       {/* ───────────── Templates ───────────── */}
-      {templates.length > 0 && (
+      {site.shop.open && templates.length > 0 && (
         <section className="wrap pt-28">
           <SectionHeading
             {...t.sections.templates}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { site } from "@/config/site";
+import { site, navItems } from "@/config/site";
 import { lp, type Locale } from "@/i18n/config";
 import { getDict } from "@/i18n/dictionaries";
 import { AuthNav } from "./auth-nav";
@@ -9,7 +9,7 @@ import { NavLinks } from "./nav-links";
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const t = getDict(locale);
-  const items = site.nav.map((n) => ({ href: lp(locale, n.href), label: t.nav[n.key] }));
+  const items = navItems().map((n) => ({ href: lp(locale, n.href), label: t.nav[n.key] }));
   const labels = { login: t.nav.login, signup: t.nav.signup, library: t.nav.library, signout: t.nav.signout };
 
   return (

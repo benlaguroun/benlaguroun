@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@brand/db";
+import { site } from "@/config/site";
+import { notFound } from "next/navigation";
 import { getDict } from "@/i18n/dictionaries";
 import { resolveLocale } from "@/i18n/resolve";
 import { pageMetadata } from "@/lib/seo";
@@ -19,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params }: Props) {
+  if (!site.shop.open) notFound();
   const locale = await resolveLocale(params);
   const t = getDict(locale).pages.courses;
 

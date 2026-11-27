@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@brand/db";
+import { site } from "@/config/site";
 import { locales } from "@/i18n/config";
 import { absoluteUrl, languageAlternates, pathFor } from "@/lib/seo";
 
@@ -29,6 +30,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const section = { SERVICE: "/services", TEMPLATE: "/templates", COURSE: "/courses" } as const;
 
+  const shopPaths = ["/courses", "/templates"];
+  const live = (path: string) => site.shop.open || !shopPaths.some((s) => path === s || path.startsWith(`${s}/`));
+
   const pages = [
     ...staticPages.map((p) => ({ ...p, lastModified: undefined as Date | undefined })),
     ...products.map((p) => ({
@@ -52,7 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // One entry per language, each pointing at its translations.
-  return pages.flatMap((page) =>
+  return pages.filter((page) => live(page.path)).flatMap((page) =>
     locales.map((locale) => ({
       url: absoluteUrl(pathFor(locale, page.path)),
       lastModified: page.lastModified,

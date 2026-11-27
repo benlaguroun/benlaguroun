@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { activeSocial, site } from "@/config/site";
+import { activeSocial, site, navItems } from "@/config/site";
 import { lp, type Locale } from "@/i18n/config";
 import { SocialGlyph } from "./social-links";
 import { NewsletterForm } from "./newsletter-form";
@@ -23,7 +23,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         <div>
           <p className="eyebrow">{t.footer.explore}</p>
           <ul className="mt-4 space-y-2.5 text-sm">
-            {site.nav.map((item) => (
+            {navItems().map((item) => (
               <li key={item.href}>
                 <Link href={lp(locale, item.href)} className="text-mute transition hover:text-ink">
                   {t.nav[item.key]}

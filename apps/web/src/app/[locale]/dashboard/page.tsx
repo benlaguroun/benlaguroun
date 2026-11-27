@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@brand/db";
+import { site } from "@/config/site";
 import { lp } from "@/i18n/config";
 import { localize } from "@/i18n/content";
 import { fill, getDict } from "@/i18n/dictionaries";
@@ -58,10 +59,12 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           <div className="glass p-10 text-center">
             <p className="display text-2xl font-semibold">{t.dashboard.emptyTitle}</p>
             <p className="mt-2 text-mute">{t.dashboard.emptyBody}</p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Link href={lp(locale, "/courses")} className="btn btn-primary">{t.dashboard.browseCourses}</Link>
-              <Link href={lp(locale, "/templates")} className="btn btn-glass">{t.dashboard.browseTemplates}</Link>
-            </div>
+            {site.shop.open && (
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link href={lp(locale, "/courses")} className="btn btn-primary">{t.dashboard.browseCourses}</Link>
+                <Link href={lp(locale, "/templates")} className="btn btn-glass">{t.dashboard.browseTemplates}</Link>
+              </div>
+            )}
           </div>
         )}
 

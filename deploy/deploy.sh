@@ -17,4 +17,7 @@ else
   pm2 start deploy/ecosystem.config.cjs
 fi
 pm2 save
+# Refresh the offline copies kept by the Cloudflare Worker (see deploy/worker/README.md). Harmless if it is not set up.
+sleep 4
+bash deploy/warm.sh || true
 echo "Deployed. Check https://benlaguroun.com and Admin -> Errors."

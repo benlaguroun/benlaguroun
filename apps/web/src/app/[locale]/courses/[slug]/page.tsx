@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@brand/db";
+import { site } from "@/config/site";
 import { lp } from "@/i18n/config";
 import { localize } from "@/i18n/content";
 import { getDict } from "@/i18n/dictionaries";
@@ -50,7 +51,7 @@ export default async function CoursePage({ params }: Props) {
   const locale = await resolveLocale(params);
   const t = getDict(locale);
   const raw = await getCourse(slug);
-  if (!raw) notFound();
+  if (!site.shop.open || !raw) notFound();
   const product = localize(raw, locale);
 
   const session = await getSession();

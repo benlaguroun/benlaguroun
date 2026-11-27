@@ -27,6 +27,29 @@ This is the step that makes links in emails, the sitemap and sign-in work for re
 - [ ] **Check it works.** Open `https://yourdomain.com/sitemap.xml` and `/robots.txt` (they should show your domain, not localhost). Create a test account and check that the verification email's link opens your domain. In Admin → Roadmap the domain step ticks by itself, and the server logs no "[setup]" warning at start.
 - [ ] Later, when you add payments, your webhooks are `https://yourdomain.com/api/webhooks/stripe` and `/api/webhooks/paypal`.
 
+## 1c. Where it runs, and when to move
+
+**Now: your Mac, behind a Cloudflare Tunnel, with the database on Neon.** This is enough for a live portfolio, blog, services and contact page. The shop (templates and courses) is closed on purpose: `shop.open` in `apps/web/src/config/site.ts` is `false`, so the menu, home page, sitemap and dashboard hide them and their pages return "not found". Open it when the company and payments are ready (see section 2): set it to `true` and deploy.
+
+**Keep the Mac reliable.** Never sleep while plugged in, `pm2 startup` + `pm2 save` done, `cloudflared` installed as a service (config in `/etc/cloudflared/`), and a free uptime monitor on `/api/health`.
+
+**Look professional while the Mac is off.** Add the Cloudflare Worker in `deploy/worker/` (guide in its README, about 10 minutes, free). Saved copies of public pages stay readable, and everything else shows a friendly "Back shortly" page instead of Cloudflare's error 1033. `./deploy/deploy.sh` refreshes the copies after each deploy.
+
+**Move before you take a client who depends on it every day, or before you open the shop and sell. Two options:**
+
+| | VPS (5 to 10 USD a month) | Vercel Pro (20 USD a month) |
+|---|---|---|
+| Fits your agency model (many client apps on one server) | yes | no, per project |
+| Server work | you (updates, backups) | none |
+| Uploaded files | copy the `uploads` folder | need object storage first (R2, S3) |
+| Deploy | same `deploy.sh`, pm2, tunnel | push to GitHub |
+
+Vercel's free Hobby plan is for non-commercial use only, so a site that sells needs Pro.
+
+**What makes a move easy.** The code is on GitHub, the data is in Neon, every setting is an environment variable, and the domain is on Cloudflare. A move is: set the same variables on the new host, deploy, test on a temporary address, then repoint the DNS record. Nothing in the database changes.
+
+**Known dependency on the machine: uploaded files.** Project and blog images (`/api/uploads`) and the paid downloads (`/api/uploads/private`) are saved on disk in `UPLOAD_DIR` (default `apps/web/uploads`). Back this folder up and copy it when you move. On Vercel, switch these routes to object storage first, because its servers do not keep files. Do this before you sell templates.
+
 ## 2. When the LLC exists
 
 - [ ] Fill in the `company` block in `config/site.ts`: legal name, entity type, where it is registered, registration number, registered address, tax number (optional), governing law. Then change `legal.updated` to today's date. The legal pages, footer, receipts and newsletter update by themselves.
@@ -35,6 +58,7 @@ This is the step that makes links in emails, the sitemap and sign-in work for re
 - [ ] Stripe: live secret key, plus a webhook to `https://yourdomain.com/api/webhooks/stripe` for `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `charge.refunded`. Put `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` on the server.
 - [ ] PayPal: a Live app, `PAYPAL_ENV="live"`, client ID and secret, and a webhook to `https://yourdomain.com/api/webhooks/paypal` with its ID in `PAYPAL_WEBHOOK_ID`.
 - [ ] Ask an accountant how sales tax / VAT applies to your digital sales. If you must collect it, tell me and I'll add it to checkout.
+- [ ] Open the shop: set `shop.open` to `true` in `config/site.ts` and deploy. Templates and courses then appear in the menu, home page and sitemap.
 - [ ] Make one real purchase with your own card, check the receipt and download, then refund it from Admin → Payments.
 - [ ] Check Admin → Errors is empty, and submit the sitemap (`/sitemap.xml`) in Google Search Console.
 
