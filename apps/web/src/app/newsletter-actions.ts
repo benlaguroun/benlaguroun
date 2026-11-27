@@ -21,6 +21,9 @@ export async function subscribe(_prev: SubscribeState, fd: FormData): Promise<Su
 
   const l = String(fd.get("locale") ?? "");
   const locale: Locale = isLocale(l) ? l : defaultLocale;
+  // Where they signed up, e.g. "footer" or "launch:my-course". Only plain labels are accepted.
+  const sourceRaw = String(fd.get("source") ?? "");
+  const source = /^[a-z0-9:_-]{1,60}$/.test(sourceRaw) ? sourceRaw : "footer";
 
   try {
     const existing = await prisma.subscriber.findUnique({ where: { email } });
@@ -30,7 +33,7 @@ export async function subscribe(_prev: SubscribeState, fd: FormData): Promise<Su
 
     const sub = existing
       ? await prisma.subscriber.update({ where: { email }, data: { active: true, unsubscribedAt: null, locale } })
-      : await prisma.subscriber.create({ data: { email, locale, source: "footer" } });
+      : await prisma.subscriber.create({ data: { email, locale, source } });
 
     after(() => sendWelcomeEmail({ email: sub.email, locale, token: sub.token }));
     return { ok: true };

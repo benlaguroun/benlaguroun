@@ -25,12 +25,14 @@ export const site = {
     updated: "2026-11-25", // change this date whenever you edit the legal text
   },
 
-  // The shop (templates and courses). Keep it closed until your company and payments
-  // are ready: while closed, the menu, footer, home page, sitemap and dashboard hide
-  // templates and courses and their pages return "not found". Services, the portfolio,
-  // the blog and the contact page stay live. Set open to true when you can take payments.
+  // The shop (templates and courses). While closed, the menu, footer, home page,
+  // sitemap and dashboard hide templates and courses and their pages return "not found".
+  // Services, the portfolio, the blog and the contact page stay live.
+  // When open but no payment method is set up (no STRIPE_SECRET_KEY, no PayPal keys),
+  // the pages show a "Coming soon" email form instead of a buy button. As soon as a
+  // payment method's keys are set, the buy buttons appear by themselves.
   shop: {
-    open: false as boolean,
+    open: true as boolean,
   },
 
   // Booking page (Cal.com or Calendly). Paste your full link to show a "Book a free

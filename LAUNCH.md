@@ -58,7 +58,7 @@ Vercel's free Hobby plan is for non-commercial use only, so a site that sells ne
 - [ ] Stripe: live secret key, plus a webhook to `https://yourdomain.com/api/webhooks/stripe` for `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `charge.refunded`. Put `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` on the server.
 - [ ] PayPal: a Live app, `PAYPAL_ENV="live"`, client ID and secret, and a webhook to `https://yourdomain.com/api/webhooks/paypal` with its ID in `PAYPAL_WEBHOOK_ID`.
 - [ ] Ask an accountant how sales tax / VAT applies to your digital sales. If you must collect it, tell me and I'll add it to checkout.
-- [ ] Open the shop: set `shop.open` to `true` in `config/site.ts` and deploy. Templates and courses then appear in the menu, home page and sitemap.
+- [ ] Open the shop: set `shop.open` to `true` in `config/site.ts` and deploy. Templates and courses then appear in the menu, home page and sitemap. Until a payment method has its keys, their pages show "Coming soon" with an email form (sign-ups land in Admin -> Subscribers, source `launch:<product>`); the buy buttons appear by themselves once Stripe or PayPal is set.
 - [ ] Make one real purchase with your own card, check the receipt and download, then refund it from Admin → Payments.
 - [ ] Check Admin → Errors is empty, and submit the sitemap (`/sitemap.xml`) in Google Search Console.
 

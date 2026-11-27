@@ -3,13 +3,17 @@ import type { Product } from "@brand/db";
 import { lp, type Locale } from "@/i18n/config";
 import { getDict } from "@/i18n/dictionaries";
 import { formatPrice } from "@/lib/format";
+import { availableProviders } from "@/lib/payments";
 import { Check } from "./icons";
+import { NotifyForm } from "./notify-form";
 
 type Props = { product: Product; locale: Locale; signedIn: boolean; owned: boolean };
 
 export function PurchasePanel({ product, locale, signedIn, owned }: Props) {
   const t = getDict(locale);
   const price = formatPrice(product.priceCents, product.currency, locale, t.product.customQuote);
+  // No payment method set up yet: show "coming soon" with an email form instead of a buy button.
+  const canBuy = availableProviders(product.currency).length > 0;
 
   return (
     <aside className="glass sticky top-24 h-fit space-y-6 p-7">
@@ -33,6 +37,8 @@ export function PurchasePanel({ product, locale, signedIn, owned }: Props) {
             {t.product.openLibrary}
           </Link>
         )
+      ) : !canBuy ? (
+        <NotifyForm locale={locale} slug={product.slug} product={t.product} newsletter={t.newsletter} />
       ) : (
         <Link
           href={
