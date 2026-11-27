@@ -10,6 +10,7 @@
     "migrate": "prisma migrate dev",
     "seed": "tsx prisma/seed.ts",
     "services": "tsx prisma/service-packages.ts",
+    "results": "tsx prisma/project-results.ts",
     "typecheck": "tsc --noEmit",
     "admin": "tsx prisma/make-admin.ts"
   },

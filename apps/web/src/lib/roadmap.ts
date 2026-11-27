@@ -128,8 +128,8 @@ export const defs: Def[] = [
   },
   {
     key: "portfolio", phase: "p1", kind: "business", title: "Show 3 real projects with results", href: "/admin/projects",
-    why: "Proof beats promises. Say the problem, what you built and the result.",
-    auto: (c) => ({ done: c.projects >= 3, detail: `${c.projects} of 3` }),
+    why: "Proof beats promises. Say the problem, what you built and the result. A project counts once its text has a \"Result:\" paragraph; run npm run db:results for your school, hotel and clinic projects, then add real numbers in Admin -> Projects.",
+    auto: (c) => ({ done: c.projects >= 3, detail: `${c.projects} of 3 with a result` }),
   },
   { key: "outreach", phase: "p1", kind: "business", title: "Contact 20 people directly (aim for 3 calls, 1 client)", why: "Your fastest route to the first paid project." },
   {
@@ -237,7 +237,8 @@ export async function loadRoadmap() {
       prisma.product.count({ where: { published: true, NOT: demo } }),
       prisma.product.count({ where: { published: true, ...demo } }),
       prisma.product.count({ where: { published: true, type: "TEMPLATE", NOT: demo } }),
-      prisma.project.count(),
+      // Only projects that tell what happened count: they carry a "Result:" paragraph.
+      prisma.project.count({ where: { body: { contains: "Result:" } } }),
       prisma.testimonial.count({ where: { published: true } }),
       prisma.post.count({ where: { published: true } }),
       prisma.subscriber.count(),
